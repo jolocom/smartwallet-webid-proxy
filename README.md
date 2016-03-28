@@ -49,6 +49,22 @@ Then via the proxy you would instead access
 
 	http://localhost:8111/proxy/https://testuser1.localhost:8443/profile/card
 
+### User management
+
+Register:
+
+	POST: http://localhost:8111/register
+	Parameters: username, password, name (optional), email (optional)
+
+Login:
+
+	POST: http://localhost:8111/login
+	Parameters: username, password
+
+Logout:
+
+	POST: http://localhost:8111/logout 
+
 ### How to build
 
 Just run
