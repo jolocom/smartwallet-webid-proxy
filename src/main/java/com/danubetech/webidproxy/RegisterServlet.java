@@ -16,10 +16,6 @@ public class RegisterServlet extends HttpServlet {
 
 	private static final Log log = LogFactory.getLog(RegisterServlet.class);
 
-	private static final String CLIENT_KEYSTORE_TYPE = "PKCS12";
-	private static final String CLIENT_KEYSTORE_PATH = "./client.p12";
-	private static final String CLIENT_KEYSTORE_PASS = "changeit";
-
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
