@@ -65,6 +65,10 @@ Logout:
 
 	POST: http://localhost:8111/logout 
 
+### Configuration
+
+TODO add info on how to configure the WebID proxy
+
 ### How to build
 
 Just run
