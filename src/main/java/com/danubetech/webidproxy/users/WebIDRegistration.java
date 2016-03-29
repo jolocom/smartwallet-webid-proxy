@@ -13,18 +13,19 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.danubetech.webidproxy.config.Config;
 import com.danubetech.webidproxy.ssl.MySSLSocketFactory;
 
 public class WebIDRegistration {
 
 	private static final Log log = LogFactory.getLog(WebIDRegistration.class);
 
-	public static final String baseEndpoint = "https://localhost:8443/";
+	public static final String baseEndpoint = "https://" + Config.webidHost() + "/";
 	public static final String accountEndpoint = baseEndpoint + ",system/newAccount";
 	public static final String certEndpoint = baseEndpoint + ",system/newCert";
 
 	static void registerWebIDAccount(User user) throws IOException {
-
+		
 		List<NameValuePair> accountParameterMap = new ArrayList<NameValuePair> ();
 		accountParameterMap.add(new BasicNameValuePair("username", user.getUsername()));
 		accountParameterMap.add(new BasicNameValuePair("spkac", user.getSpkac()));

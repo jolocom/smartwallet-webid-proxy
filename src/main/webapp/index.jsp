@@ -1,3 +1,7 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="com.danubetech.webidproxy.config.Config" %>
+
 <html>
 <head>
 
@@ -90,7 +94,7 @@ function get() {
 <hr>
 <p><button onclick="post();">http post:</button> <button onclick="put();">http put:</button>
 <button onclick="get();">http get:</button> <button onclick="delete();">http delete:</button>
-<input id="target" type="text" size="80" value="http://localhost:8111/proxy/https://testuser1.localhost:8443/profile/card"></p>
+<input id="target" type="text" size="80" value="http://localhost:8111/proxy/https://testuser1.<%= Config.webidHost() %>/profile/card"></p>
 <textarea id="content" cols="140" rows="30">
 @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
 

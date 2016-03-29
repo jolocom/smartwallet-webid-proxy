@@ -1,4 +1,4 @@
-This is a proxy service for WebID.
+This is a proxy service for WebID / SoLiD.
 
 It maintains a list of TLS client certificates on behalf of agents.
 
@@ -65,9 +65,9 @@ Logout:
 
 	POST: http://localhost:8111/logout 
 
-### Configuration
+Users are stored in **./users/** and also created on the SoLiD server.
 
-TODO add info on how to configure the WebID proxy
+For each user, there is a key/value text file and a PKCS#12 key store.
 
 ### How to build
 
@@ -76,5 +76,9 @@ Just run
     mvn clean install jetty:run
 
 To build and run the WebID proxy.
+
+The host and port of the SoLiD server can be configured as follows:
+
+    mvn clean install jetty:run -Dwebid.host=my.host.com:8443
 
 Then open **http://localhost:8111** in your browser for a demo interface.

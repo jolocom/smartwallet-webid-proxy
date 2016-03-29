@@ -5,13 +5,13 @@ import java.util.Properties;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.danubetech.webidproxy.config.Config;
 import com.danubetech.webidproxy.ssl.SSLGenerator;
 
 public class User {
 
 	public static final int keyLength = 2048;
 	public static final int certDays = 5000;
-	public static final String baseWebID = "localhost:8443";
 
 	public String username;
 	public String password;
@@ -41,7 +41,7 @@ public class User {
 		this.name = name;
 		this.email = email;
 
-		this.webid = "https://" + username + "." + baseWebID + "/profile/card#me";
+		this.webid = "https://" + username + "." + Config.webidHost() + "/profile/card#me";
 
 		try {
 

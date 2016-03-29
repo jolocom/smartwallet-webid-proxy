@@ -1,3 +1,4 @@
+package com.danubetech.webidproxy.test;
 
 
 import com.danubetech.webidproxy.ssl.AllTrustManager;
