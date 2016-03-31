@@ -40,7 +40,6 @@ public class UsersFileImpl implements Users {
 	public static File DIR = new File("./users/");
 
 	private static final String CLIENT_KEYSTORE_TYPE = "PKCS12";
-	private static final String CLIENT_KEYSTORE_PATH = "./client.p12";
 	private static final String CLIENT_KEYSTORE_PASS = "changeit";
 
 	@Override
