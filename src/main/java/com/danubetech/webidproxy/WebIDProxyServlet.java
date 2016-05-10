@@ -50,6 +50,8 @@ public class WebIDProxyServlet extends HttpServlet {
 
 	private static final Log log = LogFactory.getLog(WebIDProxyServlet.class);
 
+	public static final String[] COPY_HEADERS = new String[] { "Accept" };
+
 	public static Users users = null;
 
 	@Override
@@ -66,6 +68,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(user);
 		HttpPut httpPut = new HttpPut(target);
+		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpPut.setHeader(copyHeader, request.getHeader(copyHeader));
 		httpPut.setEntity(new InputStreamEntity(request.getInputStream()));
 		HttpResponse httpResponse = httpClient.execute(httpPut);
 
@@ -86,6 +89,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(user);
 		HttpPost httpPost = new HttpPost(target);
+		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpPost.setHeader(copyHeader, request.getHeader(copyHeader));
 		httpPost.setEntity(new InputStreamEntity(request.getInputStream()));
 		HttpResponse httpResponse = httpClient.execute(httpPost);
 
@@ -106,6 +110,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(user);
 		HttpGet httpGet = new HttpGet(target);
+		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpGet.setHeader(copyHeader, request.getHeader(copyHeader));
 		HttpResponse httpResponse = httpClient.execute(httpGet);
 
 		log.info("PROXY GET " + target + " -> " + httpResponse.getStatusLine());
@@ -125,6 +130,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(user);
 		HttpDelete httpDelete = new HttpDelete(target);
+		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpDelete.setHeader(copyHeader, request.getHeader(copyHeader));
 		HttpResponse httpResponse = httpClient.execute(httpDelete);
 
 		log.info("PROXY DELETE " + target + " -> " + httpResponse.getStatusLine());
