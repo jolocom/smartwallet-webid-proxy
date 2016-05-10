@@ -41,7 +41,7 @@ public class WebIDRegistration {
 	public static final String certEndpoint = "https://" + Config.webidHost() + "/" + ",system/newCert";
 
 	static void registerWebIDAccount(User user) throws IOException {
-		
+
 		List<NameValuePair> accountParameterMap = new ArrayList<NameValuePair> ();
 		accountParameterMap.add(new BasicNameValuePair("username", user.getUsername()));
 		accountParameterMap.add(new BasicNameValuePair("spkac", user.getSpkac()));
@@ -53,7 +53,15 @@ public class WebIDRegistration {
 
 	static void registerWebIDCert(User user) throws IOException {
 
-		String webid = baseEndpoint + user.getUsername() + "/profile/card#me";
+		String webid;
+
+		if (Config.vhosts()) {
+
+			webid = "https://" + user.getUsername() + "." + Config.webidHost() + "/profile/card#me";
+		} else {
+
+			webid = "https://" + Config.webidHost() + "/" + user.getUsername() + "/profile/card#me";
+		}
 
 		List<NameValuePair> certParameterMap = new ArrayList<NameValuePair> ();
 		certParameterMap.add(new BasicNameValuePair("webid", webid));
