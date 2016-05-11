@@ -65,6 +65,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		String target = request.getRequestURI().substring("/proxy/".length());
 		User user = loadUser(request);
+		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(user);
 		HttpPut httpPut = new HttpPut(target);
@@ -86,6 +87,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		String target = request.getRequestURI().substring("/proxy/".length());
 		User user = loadUser(request);
+		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(user);
 		HttpPost httpPost = new HttpPost(target);
@@ -107,6 +109,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		String target = request.getRequestURI().substring("/proxy/".length());
 		User user = loadUser(request);
+		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(user);
 		HttpGet httpGet = new HttpGet(target);
@@ -127,6 +130,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		String target = request.getRequestURI().substring("/proxy/".length());
 		User user = loadUser(request);
+		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(user);
 		HttpDelete httpDelete = new HttpDelete(target);

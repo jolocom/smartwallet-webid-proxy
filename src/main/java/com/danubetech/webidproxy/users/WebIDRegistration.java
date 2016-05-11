@@ -37,9 +37,8 @@ public class WebIDRegistration {
 
 	private static final Log log = LogFactory.getLog(WebIDRegistration.class);
 
-	public static final String baseEndpoint = "https://" + Config.webidHost() + "/";
-	public static final String accountEndpoint = baseEndpoint + ",system/newAccount";
-	public static final String certEndpoint = baseEndpoint + ",system/newCert";
+	public static final String accountEndpoint = "https://" + Config.webidHost() + "/" + ",system/newAccount";
+	public static final String certEndpoint = "https://" + Config.webidHost() + "/" + ",system/newCert";
 
 	static void registerWebIDAccount(User user) throws IOException {
 		

@@ -38,6 +38,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
@@ -52,9 +54,12 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 
+import com.danubetech.webidproxy.WebIDProxyServlet;
 import com.danubetech.webidproxy.users.User;
 
 public class MySSLSocketFactory extends SSLSocketFactory {
+
+	private static final Log log = LogFactory.getLog(MySSLSocketFactory.class);
 
 	private static final String CLIENT_KEYSTORE_TYPE = "PKCS12";
 	private static final String CLIENT_KEYSTORE_PASS = "changeit";
@@ -133,6 +138,7 @@ public class MySSLSocketFactory extends SSLSocketFactory {
 		KeyManager[] kms = kmfactory.getKeyManagers();
 		//KeyManager[] kms = new KeyManager[] { km };
 
+		if (log.isDebugEnabled()) log.debug("KM: " + kms[0]);
 		return kms;
 	}
 
@@ -161,6 +167,7 @@ public class MySSLSocketFactory extends SSLSocketFactory {
 
 		TrustManager[] tms = new TrustManager[] { tm };
 
+		if (log.isDebugEnabled()) log.debug("TM: " + tms[0]);
 		return tms;
 	}
 
@@ -172,6 +179,7 @@ public class MySSLSocketFactory extends SSLSocketFactory {
 
 			SSLContext sslContext = SSLContext.getInstance("TLS");
 			sslContext.init(user != null ? kms(user) : null, tms(), null);
+			if (log.isDebugEnabled()) log.debug("SSL Context: " + sslContext);
 
 			// done
 
