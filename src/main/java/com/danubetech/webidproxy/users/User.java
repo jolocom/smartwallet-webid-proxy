@@ -58,7 +58,13 @@ public class User {
 		this.name = name;
 		this.email = email;
 
-		this.webid = "https://" + username + "." + Config.webidHost() + "/profile/card#me";
+		if (Config.vhosts()) {
+
+			this.webid = "https://" + username + "." + Config.webidHost() + "/profile/card#me";
+		} else {
+
+			this.webid = "https://" + Config.webidHost() + "/" + username + "/profile/card#me";
+		}
 
 		try {
 

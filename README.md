@@ -77,8 +77,12 @@ Just run
 
 To build and run the WebID proxy.
 
-The host and port of the SoLiD server can be configured as follows:
+The **host** and **port** of the SoLiD server can be configured as follows:
 
     mvn clean install jetty:run -Dwebid.host=my.host.com:8443
+
+Support for **vhosts** style WebIDs can be enabled as follows:
+
+    mvn clean install jetty:run -Dvhosts
 
 Then open **http://localhost:8111** in your browser for a demo interface.
