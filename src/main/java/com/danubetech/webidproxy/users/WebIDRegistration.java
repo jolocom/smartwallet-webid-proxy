@@ -37,37 +37,73 @@ public class WebIDRegistration {
 
 	private static final Log log = LogFactory.getLog(WebIDRegistration.class);
 
-	public static final String accountEndpoint = "https://" + Config.webidHost() + "/" + ",system/newAccount";
-	public static final String certEndpoint = "https://" + Config.webidHost() + "/" + ",system/newCert";
-
 	static void registerWebIDAccount(User user) throws IOException {
+
+		String webid = webid(user);
+		String host = host(user);
 
 		List<NameValuePair> accountParameterMap = new ArrayList<NameValuePair> ();
 		accountParameterMap.add(new BasicNameValuePair("username", user.getUsername()));
+		accountParameterMap.add(new BasicNameValuePair("password", user.getPassword()));
 		accountParameterMap.add(new BasicNameValuePair("spkac", user.getSpkac()));
+		accountParameterMap.add(new BasicNameValuePair("webid", webid));
+		accountParameterMap.add(new BasicNameValuePair("host", host));
 		if (user.getName() != null) accountParameterMap.add(new BasicNameValuePair("name", user.getName()));
 		if (user.getEmail() != null) accountParameterMap.add(new BasicNameValuePair("email", user.getEmail()));
 
-		submit(accountEndpoint, accountParameterMap);
+		submit(accountEndpoint(user), accountParameterMap);
 	}
 
 	static void registerWebIDCert(User user) throws IOException {
 
-		String webid;
+		List<NameValuePair> certParameterMap = new ArrayList<NameValuePair> ();
+		certParameterMap.add(new BasicNameValuePair("username", user.getUsername()));
+		certParameterMap.add(new BasicNameValuePair("spkac", user.getSpkac()));
+		submit(certEndpoint(user), certParameterMap);
+	}
+
+	private static String webid(User user) {
 
 		if (Config.vhosts()) {
 
-			webid = "https://" + user.getUsername() + "." + Config.webidHost() + "/profile/card#me";
+			return "https://" + user.getUsername() + "." + Config.webidHost() + "/profile/card#me";
 		} else {
 
-			webid = "https://" + Config.webidHost() + "/" + user.getUsername() + "/profile/card#me";
+			return "https://" + Config.webidHost() + "/" + user.getUsername() + "/profile/card#me";
 		}
+	}
 
-		List<NameValuePair> certParameterMap = new ArrayList<NameValuePair> ();
-		certParameterMap.add(new BasicNameValuePair("webid", webid));
-		certParameterMap.add(new BasicNameValuePair("spkac", user.getSpkac()));
-		certParameterMap.add(new BasicNameValuePair("name", "My WebID account"));
-		submit(certEndpoint, certParameterMap);
+	private static String host(User user) {
+
+		if (Config.vhosts()) {
+
+			return user.getUsername() + "." + Config.webidHost();
+		} else {
+
+			return Config.webidHost();
+		}
+	}
+
+	private static String accountEndpoint(User user) {
+
+		if (Config.vhosts()) {
+
+			return "https://" + user.getUsername() + "." + Config.webidHost() + "/" + "api/accounts/new";
+		} else {
+
+			return "https://" + Config.webidHost() + "/" + "api/accounts/new";
+		}
+	}
+
+	private static String certEndpoint(User user) {
+
+		if (Config.vhosts()) {
+
+			return "https://" + user.getUsername() + "." + Config.webidHost() + "/" + "api/accounts/cert";
+		} else {
+
+			return "https://" + Config.webidHost() + "/" + "api/accounts/cert";
+		}
 	}
 
 	private static void submit(String target, List<? extends NameValuePair> nameValuePairs) throws IOException {
@@ -77,6 +113,6 @@ public class WebIDRegistration {
 		httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		HttpResponse httpResponse = httpClient.execute(httpPost);
 
-		log.info("SUBMIT " + target + " -> " + httpResponse.getStatusLine());
+		log.info("SUBMIT " + target + " " + nameValuePairs + " -> " + httpResponse.getStatusLine());
 	}
 }
