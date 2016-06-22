@@ -17,15 +17,17 @@
  */
 package com.danubetech.webidproxy.ssl;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.PrivateKey;
-import java.security.cert.Certificate;
+import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -40,21 +42,18 @@ import javax.net.ssl.X509TrustManager;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.HTTP;
 
-import com.danubetech.webidproxy.WebIDProxyServlet;
 import com.danubetech.webidproxy.users.User;
 
 public class MySSLSocketFactory extends SSLSocketFactory {
@@ -82,21 +81,21 @@ public class MySSLSocketFactory extends SSLSocketFactory {
 
 		CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
 		X509Certificate certificate = (X509Certificate)certFactory.generateCertificate(new ByteArrayInputStream(Base64.decodeBase64(user.getCertificate())));
-		
+
 		final PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
 
 		// key manager
 
 		KeyStore ks = KeyStore.getInstance(CLIENT_KEYSTORE_TYPE);
-//		ks.load(new FileInputStream(CLIENT_KEYSTORE_PATH), CLIENT_KEYSTORE_PASS.toCharArray());
+		//		ks.load(new FileInputStream(CLIENT_KEYSTORE_PATH), CLIENT_KEYSTORE_PASS.toCharArray());
 		ks.load(new FileInputStream("./users/" + user.getUsername() + ".p12"), CLIENT_KEYSTORE_PASS.toCharArray());
-//		ks.load(null, CLIENT_KEYSTORE_PASS.toCharArray());
-//		ks.setKeyEntry(user.getUsername(), privateKey, CLIENT_KEYSTORE_PASS.toCharArray(), new Certificate[] { certificate });
+		//		ks.load(null, CLIENT_KEYSTORE_PASS.toCharArray());
+		//		ks.setKeyEntry(user.getUsername(), privateKey, CLIENT_KEYSTORE_PASS.toCharArray(), new Certificate[] { certificate });
 
 		KeyManagerFactory kmfactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 		kmfactory.init(ks, CLIENT_KEYSTORE_PASS.toCharArray());
 
-/*		KeyManager km = new X509ExtendedKeyManager() {
+		/*		KeyManager km = new X509ExtendedKeyManager() {
 
 			@Override
 			public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socker) {
@@ -194,7 +193,61 @@ public class MySSLSocketFactory extends SSLSocketFactory {
 
 		try {
 
-			MySSLSocketFactory sf = new MySSLSocketFactory(user);
+			final HttpParams httpParams = new BasicHttpParams();
+
+			// load the keystore containing the client certificate - keystore type is probably jks or pkcs12
+			final KeyStore keystore = KeyStore.getInstance("pkcs12");
+			InputStream keystoreInput = new FileInputStream(new File("./users/" + user.getUsername() + ".p12"));
+			// TODO get the keystore as an InputStream from somewhere
+			keystore.load(keystoreInput, CLIENT_KEYSTORE_PASS.toCharArray());
+			
+//			SSLSocketFactory sslf = new SSLSocketFactory(keystore, CLIENT_KEYSTORE_PASS, truststore);
+	//		sslf.
+			SSLSocketFactory sslf = new SSLSocketFactory(
+		            "TLS",
+		            keystore,
+		            CLIENT_KEYSTORE_PASS,
+		            null,
+		            new SecureRandom(),
+		            new TrustSelfSignedStrategy(),
+		            SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+
+					
+					
+			
+			final SchemeRegistry schemeRegistry = new SchemeRegistry();
+			schemeRegistry.register(new Scheme("https", sslf, 443));
+			schemeRegistry.register(new Scheme("https", sslf, 8443));
+
+			final DefaultHttpClient httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, schemeRegistry), httpParams);
+			return httpClient;
+			
+/*			SSLContext sslcontext = SSLContexts.custom()
+					.loadKeyMaterial(
+							new File("./users/" + user.getUsername() + ".p12"), 
+							CLIENT_KEYSTORE_PASS.toCharArray(),
+							CLIENT_KEYSTORE_PASS.toCharArray())
+					.loadTrustMaterial(
+							new TrustSelfSignedStrategy())
+					.build();
+			// Allow TLSv1 protocol only
+			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+					sslcontext,
+					new String[] { "TLSv1" },
+					null,
+					SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+			CloseableHttpClient httpclient = HttpClients.custom()
+					.setSSLSocketFactory(sslsf)
+					.build();			
+			return httpclient;
+*/
+
+
+
+
+
+
+			/*			MySSLSocketFactory sf = new MySSLSocketFactory(user);
 			sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
 			HttpParams params = new BasicHttpParams();
@@ -207,10 +260,10 @@ public class MySSLSocketFactory extends SSLSocketFactory {
 
 			ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
 
-			return new DefaultHttpClient(ccm, params);
-		} catch (Exception e) {
+			return new DefaultHttpClient(ccm, params);*/
+		} catch (Exception ex) {
 
-			return new DefaultHttpClient();
+			throw new RuntimeException(ex.getMessage(), ex);
 		}
 	}	
 
