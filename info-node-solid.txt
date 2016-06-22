@@ -1,0 +1,34 @@
+root@paris2:/opt/solid# solid start
+Solid server (solid v3.0.1) running on https://localhost:8443/
+Press <ctrl>+c to stop
+/usr/lib/node_modules/solid-server/lib/identity-provider.js:244
+  var key = card + '#key-' + options.date.getTime()
+                                    ^
+
+TypeError: Cannot read property 'date' of undefined
+    at addKey (/usr/lib/node_modules/solid-server/lib/identity-provider.js:244:37)
+    at createCard (/usr/lib/node_modules/solid-server/lib/identity-provider.js:235:5)
+    at IdentityProvider.create (/usr/lib/node_modules/solid-server/lib/identity-provider.js:99:33)
+    at email.sendMail.from (/usr/lib/node_modules/solid-server/lib/identity-provider.js:582:12)
+    at fn (/usr/lib/node_modules/solid-server/node_modules/async/lib/async.js:746:34)
+    at /usr/lib/node_modules/solid-server/node_modules/async/lib/async.js:1213:16
+    at /usr/lib/node_modules/solid-server/node_modules/async/lib/async.js:166:37
+    at /usr/lib/node_modules/solid-server/node_modules/async/lib/async.js:706:43
+    at /usr/lib/node_modules/solid-server/node_modules/async/lib/async.js:167:37
+    at Immediate._onImmediate (/usr/lib/node_modules/solid-server/node_modules/async/lib/async.js:1206:34)
+root@paris2:/opt/solid# nodejs --version
+v6.2.1
+root@paris2:/opt/solid# cat config.json 
+{
+  "root": "/opt/solid",
+  "port": "8443",
+  "webid": true,
+  "auth": "tls",
+  "sslKey": "./localhost.key",
+  "sslCert": "./localhost.cert",
+  "idp": false,
+  "fileBrowser": "https://linkeddata.github.io/warp/#/list/",
+  "dataBrowser": true,
+  "strictOrigin": true
+}
+

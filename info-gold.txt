@@ -1,0 +1,2 @@
+/opt/go/bin/server -https=":9022" -root=/opt/golddata/ -debug -nohttp=true >/opt/go/gold.log 2>&1
+
