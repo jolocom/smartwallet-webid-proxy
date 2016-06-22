@@ -32,3 +32,8 @@ root@paris2:/opt/solid# cat config.json
   "strictOrigin": true
 }
 
+
+=============
+
+nodejs ./node-solid-server/bin/solid.js start
+
