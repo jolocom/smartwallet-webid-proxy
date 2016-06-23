@@ -25,7 +25,6 @@ import java.nio.charset.Charset;
 import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.PrivateKey;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -42,6 +41,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.params.ClientPNames;
+import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -54,7 +55,6 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 
-import com.danubetech.webidproxy.WebIDProxyServlet;
 import com.danubetech.webidproxy.users.User;
 
 public class MySSLSocketFactory extends SSLSocketFactory {
@@ -204,12 +204,16 @@ public class MySSLSocketFactory extends SSLSocketFactory {
 			SchemeRegistry registry = new SchemeRegistry();
 			registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
 			registry.register(new Scheme("https", sf, 443));
+			registry.register(new Scheme("https", sf, 8443));
 
 			ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
 
-			return new DefaultHttpClient(ccm, params);
-		} catch (Exception e) {
+			DefaultHttpClient httpClient = new DefaultHttpClient(ccm, params);
+			httpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.BEST_MATCH);
+			return httpClient;
+		} catch (Exception ex) {
 
+			log.warn(ex.getMessage(), ex);
 			return new DefaultHttpClient();
 		}
 	}	
