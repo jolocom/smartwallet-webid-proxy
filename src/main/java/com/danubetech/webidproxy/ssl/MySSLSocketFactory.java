@@ -16,217 +16,141 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.danubetech.webidproxy.ssl;
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
-import java.security.KeyFactory;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.security.spec.PKCS8EncodedKeySpec;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpVersion;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.client.params.CookiePolicy;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.HTTP;
+import org.apache.http.Header;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpResponseInterceptor;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.config.Lookup;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.SchemePortResolver;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.cookie.CookieSpecProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.DefaultSchemePortResolver;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.impl.cookie.RFC6265CookieSpecProvider;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
 
 import com.danubetech.webidproxy.users.User;
 
-public class MySSLSocketFactory extends SSLSocketFactory {
+public class MySSLSocketFactory {
 
 	private static final Log log = LogFactory.getLog(MySSLSocketFactory.class);
 
-	private static final String CLIENT_KEYSTORE_TYPE = "PKCS12";
 	private static final String CLIENT_KEYSTORE_PASS = "changeit";
 
-	private SSLContext sslContext;
+	public static CloseableHttpClient getNewHttpClient(HttpServletRequest request, User user) {
 
-	public MySSLSocketFactory(User user) {
+		CloseableHttpClient httpClient = request == null ? null : (CloseableHttpClient) request.getSession().getAttribute("HTTPCLIENT");
+		if (httpClient != null) {
 
-		super(init(user));
+			log.info("Retrieved HTTPCLIENT from session.");
+			return httpClient;
+		}
 
-		sslContext = init(user);
-	}
+		File keyfile = user == null ? null : new File("./users/" + user.getUsername() + ".p12");
 
-	private static KeyManager[] kms(User user) throws Exception {
-
-		// private key and certificate
-
-		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.decodeBase64(user.getPrivatekey().getBytes(Charset.forName("UTF-8"))));
-		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-
-		CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-		X509Certificate certificate = (X509Certificate)certFactory.generateCertificate(new ByteArrayInputStream(Base64.decodeBase64(user.getCertificate())));
-		
-		final PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
-
-		// key manager
-
-		KeyStore ks = KeyStore.getInstance(CLIENT_KEYSTORE_TYPE);
-//		ks.load(new FileInputStream(CLIENT_KEYSTORE_PATH), CLIENT_KEYSTORE_PASS.toCharArray());
-		ks.load(new FileInputStream("./users/" + user.getUsername() + ".p12"), CLIENT_KEYSTORE_PASS.toCharArray());
-//		ks.load(null, CLIENT_KEYSTORE_PASS.toCharArray());
-//		ks.setKeyEntry(user.getUsername(), privateKey, CLIENT_KEYSTORE_PASS.toCharArray(), new Certificate[] { certificate });
-
-		KeyManagerFactory kmfactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-		kmfactory.init(ks, CLIENT_KEYSTORE_PASS.toCharArray());
-
-/*		KeyManager km = new X509ExtendedKeyManager() {
-
-			@Override
-			public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socker) {
-
-				return null;
-			}
-
-			@Override
-			public String chooseServerAlias(String keyType, Principal[] issuers, Socket socket) {
-
-				return null;
-			}
-
-			@Override
-			public X509Certificate[] getCertificateChain(String alias) {
-
-				return null;
-			}
-
-			@Override
-			public String[] getClientAliases(String keyType, Principal[] issuers) {
-
-				return null;
-			}
-
-			@Override
-			public PrivateKey getPrivateKey(String alias) {
-
-				return privateKey;
-			}
-
-			@Override
-			public String[] getServerAliases(String keyType, Principal[] issuers) {
-
-				return null;
-			}
-		};*/
-
-		KeyManager[] kms = kmfactory.getKeyManagers();
-		//KeyManager[] kms = new KeyManager[] { km };
-
-		if (log.isDebugEnabled()) log.debug("KM: " + kms[0]);
-		return kms;
-	}
-
-	private static TrustManager[] tms() throws Exception {
-
-		// trust manager
-
-		KeyStore ts = KeyStore.getInstance(KeyStore.getDefaultType());
-		ts.load(null, null);
-
-		TrustManager tm = new X509TrustManager() {
-
-			public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-
-			}
-
-			public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-
-			}
-
-			public X509Certificate[] getAcceptedIssuers() {
-
-				return null;
-			}
-		};
-
-		TrustManager[] tms = new TrustManager[] { tm };
-
-		if (log.isDebugEnabled()) log.debug("TM: " + tms[0]);
-		return tms;
-	}
-
-	private static SSLContext init(User user) {
+		SSLContext sslContext;
 
 		try {
 
-			// ssl context
-
-			SSLContext sslContext = SSLContext.getInstance("TLS");
-			sslContext.init(user != null ? kms(user) : null, tms(), null);
-			if (log.isDebugEnabled()) log.debug("SSL Context: " + sslContext);
-
-			// done
-
-			return sslContext;
+			SSLContextBuilder sslContextBuilder = SSLContexts.custom();
+			if (keyfile != null) sslContextBuilder.loadKeyMaterial(keyfile, CLIENT_KEYSTORE_PASS.toCharArray(), CLIENT_KEYSTORE_PASS.toCharArray());
+			sslContextBuilder.loadTrustMaterial(TrustSelfSignedStrategy.INSTANCE);
+			sslContextBuilder.useProtocol("TLS");
+			sslContextBuilder.setSecureRandom(null);
+			sslContext = sslContextBuilder.build();
 		} catch (Exception ex) {
 
 			throw new RuntimeException(ex.getMessage(), ex);
 		}
+
+		SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(
+				sslContext,
+				new NoopHostnameVerifier());
+
+		Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
+				.register("http", PlainConnectionSocketFactory.getSocketFactory())
+				.register("https", sslConnectionSocketFactory)
+				.build();
+
+		SchemePortResolver schemePortResolver = new DefaultSchemePortResolver();
+
+		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+		httpClientBuilder.setSSLSocketFactory(sslConnectionSocketFactory);
+		httpClientBuilder.setConnectionManager(new PoolingHttpClientConnectionManager(registry));
+		httpClientBuilder.setSchemePortResolver(schemePortResolver);
+
+
+		RFC6265CookieSpecProvider cookieSpecProvider = new RFC6265CookieSpecProvider();
+		Lookup<CookieSpecProvider> cookieSpecRegistry = RegistryBuilder.<CookieSpecProvider>create()
+				.register(CookieSpecs.DEFAULT, cookieSpecProvider)
+				.register(CookieSpecs.STANDARD, cookieSpecProvider)
+				.register(CookieSpecs.STANDARD_STRICT, cookieSpecProvider)
+				.build();
+
+		RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
+		requestConfigBuilder.setCookieSpec(CookieSpecs.DEFAULT);
+
+		RequestConfig requestConfig = requestConfigBuilder.build();
+
+		httpClientBuilder.setDefaultRequestConfig(requestConfig);
+		httpClientBuilder.setDefaultCookieSpecRegistry(cookieSpecRegistry);
+		httpClientBuilder.addInterceptorLast(MYHTTPREQUESTINTERCEPTOR);
+		httpClientBuilder.addInterceptorFirst(MYHTTPRESPONSEINTERCEPTOR);
+
+		httpClient = httpClientBuilder.build();
+		if (request != null) request.getSession().setAttribute("HTTPCLIENT", httpClient);
+		log.info("Storing HTTPCLIENT in session.");
+
+		return httpClient;
 	}
 
-	public static HttpClient getNewHttpClient(User user) {
+	private static HttpRequestInterceptor MYHTTPREQUESTINTERCEPTOR = new HttpRequestInterceptor() {
 
-		try {
+		@Override
+		public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
 
-			MySSLSocketFactory sf = new MySSLSocketFactory(user);
-			sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+			log.debug("<< REQUEST: " + request.getRequestLine());
 
-			HttpParams params = new BasicHttpParams();
-			HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-			HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
+			for (Header header : request.getAllHeaders()) {
 
-			SchemeRegistry registry = new SchemeRegistry();
-			registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-			registry.register(new Scheme("https", sf, 443));
-			registry.register(new Scheme("https", sf, 8443));
-
-			ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
-
-			DefaultHttpClient httpClient = new DefaultHttpClient(ccm, params);
-			httpClient.getParams().setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.BEST_MATCH);
-			return httpClient;
-		} catch (Exception ex) {
-
-			log.warn(ex.getMessage(), ex);
-			return new DefaultHttpClient();
+				log.debug("<< HEADER: " + header.getName() + " -> " + header.getValue());
+			}
 		}
-	}	
+	};
 
-	@Override
-	public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException, UnknownHostException {
+	private static HttpResponseInterceptor MYHTTPRESPONSEINTERCEPTOR = new HttpResponseInterceptor() {
 
-		return this.sslContext.getSocketFactory().createSocket(socket, host, port, autoClose);
-	}
+		@Override
+		public void process(HttpResponse response, HttpContext context) throws HttpException, IOException {
 
-	@Override
-	public Socket createSocket() throws IOException {
+			log.debug(">> RESPONSE: " + response.getStatusLine());
 
-		return this.sslContext.getSocketFactory().createSocket();
-	}
+			for (Header header : response.getAllHeaders()) {
+
+				log.debug(">> HEADER: " + header.getName() + " -> " + header.getValue());
+			}
+		}
+	};
 }

@@ -108,7 +108,7 @@ public class WebIDRegistration {
 
 	private static void submit(String target, List<? extends NameValuePair> nameValuePairs) throws IOException {
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(null);
+		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(null, null);
 		HttpPost httpPost = new HttpPost(target);
 		httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		HttpResponse httpResponse = httpClient.execute(httpPost);

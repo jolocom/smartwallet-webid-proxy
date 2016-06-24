@@ -50,7 +50,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 	private static final Log log = LogFactory.getLog(WebIDProxyServlet.class);
 
-	public static final String[] COPY_HEADERS = new String[] { "Accept" };
+	public static final String[] COPY_HEADERS = new String[] { "Accept", "Content-Type" };
 
 	public static Users users = null;
 
@@ -67,7 +67,7 @@ public class WebIDProxyServlet extends HttpServlet {
 		User user = loadUser(request);
 		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(user);
+		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
 		HttpPut httpPut = new HttpPut(target);
 		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpPut.setHeader(copyHeader, request.getHeader(copyHeader));
 		httpPut.setEntity(new InputStreamEntity(request.getInputStream()));
@@ -89,7 +89,7 @@ public class WebIDProxyServlet extends HttpServlet {
 		User user = loadUser(request);
 		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(user);
+		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
 		HttpPost httpPost = new HttpPost(target);
 		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpPost.setHeader(copyHeader, request.getHeader(copyHeader));
 		httpPost.setEntity(new InputStreamEntity(request.getInputStream()));
@@ -111,7 +111,7 @@ public class WebIDProxyServlet extends HttpServlet {
 		User user = loadUser(request);
 		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(user);
+		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
 		HttpGet httpGet = new HttpGet(target);
 		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpGet.setHeader(copyHeader, request.getHeader(copyHeader));
 		HttpResponse httpResponse = httpClient.execute(httpGet);
@@ -132,7 +132,7 @@ public class WebIDProxyServlet extends HttpServlet {
 		User user = loadUser(request);
 		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(user);
+		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
 		HttpDelete httpDelete = new HttpDelete(target);
 		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpDelete.setHeader(copyHeader, request.getHeader(copyHeader));
 		HttpResponse httpResponse = httpClient.execute(httpDelete);
