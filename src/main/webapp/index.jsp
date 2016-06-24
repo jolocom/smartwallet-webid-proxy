@@ -31,10 +31,12 @@
 
 function register() {
 
+	var regtarget = $("#regtarget").val();
+
 	var username = $("#regusername").val();
 	var password = $("#regpassword").val();
 
-	$.post("/register", {"username":username,"password":password})
+	$.post(regtarget, {"username":username,"password":password})
 	.done(function() {
 		alert("success!");
 	})
@@ -45,10 +47,12 @@ function register() {
 
 function login() {
 
+	var logintarget = $("#logintarget").val();
+
 	var username = $("#logusername").val();
 	var password = $("#logpassword").val();
 
-	$.post("/login", {"username":username,"password":password})
+	$.post(logintarget, {"username":username,"password":password})
 	.done(function() {
 		alert("success!");
 	})
@@ -59,7 +63,9 @@ function login() {
 
 function logout() {
 
-	$.post("/logout")
+	var logouttarget = $("#logouttarget").val();
+
+	$.post(logouttarget)
 	.done(function() {
 		alert("success!");
 	})
@@ -150,13 +156,16 @@ function get() {
 <input id="regusername" type="text" size="20" value="testuser1">
 <input id="regpassword" type="password" size="20" value="secret">
 <input id="regname" type="text" size="20" value="My Name">
-<input id="regemail" type="text" size="20" value="my@email.com"></p>
+<input id="regemail" type="text" size="20" value="my@email.com"><br>
+<input id="regtarget" type="text" size="40" value="http://localhost:8111/register"></p>
 <hr>
 <p><button onclick="login();">login:</button>
 <input id="logusername" type="text" size="20" value="testuser1">
-<input id="logpassword" type="password" size="20" value="secret"></p>
+<input id="logpassword" type="password" size="20" value="secret"><br>
+<input id="logintarget" type="text" size="40" value="http://localhost:8111/login"></p>
 <hr>
-<p><button onclick="logout();">logout:</button></p>
+<p><button onclick="logout();">logout:</button><br>
+<input id="logouttarget" type="text" size="40" value="http://localhost:8111/logout"></p>
 <hr>
 <p><button onclick="post();">http post:</button> <button onclick="put();">http put:</button>
 <button onclick="get();">http get:</button> <button onclick="delet();">http delete:</button>
