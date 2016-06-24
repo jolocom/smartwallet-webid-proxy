@@ -146,6 +146,17 @@ public class WebIDProxyServlet extends HttpServlet {
 		EntityUtils.consume(entity);
 	}
 
+	@Override
+	protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		super.doOptions(request, response);
+
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Credentials", "true");
+		response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Cache-Control, Expires, X-Cache, X-HTTP-Method-Override, Accept");
+		response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS");
+	}
+
 	private static User loadUser(HttpServletRequest request) {
 
 		HttpSession session = request.getSession(false);
