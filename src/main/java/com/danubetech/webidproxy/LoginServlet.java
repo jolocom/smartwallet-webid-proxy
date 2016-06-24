@@ -51,6 +51,7 @@ public class LoginServlet extends HttpServlet {
 		}
 
 		request.getSession().setAttribute("username", username);
+		request.getSession().setAttribute("HTTPCLIENT", null);
 		log.debug("User " + username + " successfully logged in.");
 	}
 }

@@ -58,6 +58,8 @@ public class RegisterServlet extends HttpServlet {
 		}*/
 
 		WebIDProxyServlet.users.register(username, password, name, email);
-		log.debug("User " + username + " successfully registered.");
+		request.getSession().setAttribute("username", username);
+		request.getSession().setAttribute("HTTPCLIENT", null);
+		log.debug("User " + username + " successfully registered and logged in.");
 	}
 }
