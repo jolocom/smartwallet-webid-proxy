@@ -63,7 +63,7 @@ public class WebIDProxyServlet extends HttpServlet {
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String target = request.getRequestURI().substring("/proxy/".length());
+		String target = request.getParameter("url");
 		User user = loadUser(request);
 		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
@@ -85,7 +85,7 @@ public class WebIDProxyServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String target = request.getRequestURI().substring("/proxy/".length());
+		String target = request.getParameter("url");
 		User user = loadUser(request);
 		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
@@ -107,7 +107,7 @@ public class WebIDProxyServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String target = request.getRequestURI().substring("/proxy/".length());
+		String target = request.getParameter("url");
 		User user = loadUser(request);
 		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
@@ -128,7 +128,7 @@ public class WebIDProxyServlet extends HttpServlet {
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String target = request.getRequestURI().substring("/proxy/".length());
+		String target = request.getParameter("url");
 		User user = loadUser(request);
 		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
