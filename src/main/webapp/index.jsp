@@ -73,7 +73,53 @@ function post() {
 	var target = $("#target").val();
 	var content = $("#content").val();
 
-	$.post(target, content)
+	$.ajax({
+      url:target,
+      type:"POST",
+      headers: { 
+        "Accept" : "text/turtle; charset=utf-8",
+        "Content-Type": "text/turtle; charset=utf-8"
+      },
+      data:content
+    })  
+	.done(function(data) {
+		alert("success: " + data);
+	})
+	.fail(function(err) {
+		alert("error: " + JSON.stringify(err));
+	});
+}
+
+function put() {
+
+	var target = $("#target").val();
+	var content = $("#content").val();
+
+	$.ajax({
+      url:target,
+      type:"PUT",
+      headers: { 
+        "Accept" : "text/turtle; charset=utf-8",
+        "Content-Type": "text/turtle; charset=utf-8"
+      },
+      data:content
+    })  
+	.done(function(data) {
+		alert("success: " + data);
+	})
+	.fail(function(err) {
+		alert("error: " + JSON.stringify(err));
+	});
+}
+
+function delet() {
+
+	var target = $("#target").val();
+
+	$.ajax({
+      url:target,
+      type:"DELETE"
+    })  
 	.done(function(data) {
 		alert("success: " + data);
 	})
@@ -113,7 +159,7 @@ function get() {
 <p><button onclick="logout();">logout:</button></p>
 <hr>
 <p><button onclick="post();">http post:</button> <button onclick="put();">http put:</button>
-<button onclick="get();">http get:</button> <button onclick="delete();">http delete:</button>
+<button onclick="get();">http get:</button> <button onclick="delet();">http delete:</button>
 <input id="target" type="text" size="80" value="http://localhost:8111/proxy/https://testuser1.<%= Config.webidHost() %>/profile/card"></p>
 <textarea id="content" cols="140" rows="30">
 @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
