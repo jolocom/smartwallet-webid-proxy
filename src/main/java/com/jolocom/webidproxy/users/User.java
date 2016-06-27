@@ -1,12 +1,12 @@
-package com.danubetech.webidproxy.users;
+package com.jolocom.webidproxy.users;
 
 import java.security.cert.X509Certificate;
 import java.util.Properties;
 
 import org.apache.commons.codec.binary.Base64;
 
-import com.danubetech.webidproxy.config.Config;
-import com.danubetech.webidproxy.ssl.SSLGenerator;
+import com.jolocom.webidproxy.config.Config;
+import com.jolocom.webidproxy.ssl.SSLGenerator;
 
 public class User {
 

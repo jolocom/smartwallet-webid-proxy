@@ -1,4 +1,4 @@
-package com.danubetech.webidproxy.config;
+package com.jolocom.webidproxy.config;
 
 public class Config {
 

@@ -1,4 +1,4 @@
-package com.danubetech.webidproxy;
+package com.jolocom.webidproxy;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package com.danubetech.webidproxy.users;
+package com.jolocom.webidproxy.users;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

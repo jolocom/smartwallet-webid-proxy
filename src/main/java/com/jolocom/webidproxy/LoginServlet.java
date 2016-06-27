@@ -1,4 +1,4 @@
-package com.danubetech.webidproxy;
+package com.jolocom.webidproxy;
 
 import java.io.IOException;
 
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.danubetech.webidproxy.users.User;
+import com.jolocom.webidproxy.users.User;
 
 public class LoginServlet extends HttpServlet {
 

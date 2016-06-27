@@ -12,7 +12,7 @@
 
 	<servlet>
 		<servlet-name>RegisterServlet</servlet-name>
-		<servlet-class>com.danubetech.webidproxy.RegisterServlet</servlet-class>
+		<servlet-class>com.jolocom.webidproxy.RegisterServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -22,7 +22,7 @@
 
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
-		<servlet-class>com.danubetech.webidproxy.LoginServlet</servlet-class>
+		<servlet-class>com.jolocom.webidproxy.LoginServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -32,7 +32,7 @@
 
 	<servlet>
 		<servlet-name>LogoutServlet</servlet-name>
-		<servlet-class>com.danubetech.webidproxy.LogoutServlet</servlet-class>
+		<servlet-class>com.jolocom.webidproxy.LogoutServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -42,7 +42,7 @@
 
 	<servlet>
 		<servlet-name>WebIDProxyServlet</servlet-name>
-		<servlet-class>com.danubetech.webidproxy.WebIDProxyServlet</servlet-class>
+		<servlet-class>com.jolocom.webidproxy.WebIDProxyServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 

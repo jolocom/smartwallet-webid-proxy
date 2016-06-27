@@ -1,4 +1,4 @@
-package com.danubetech.webidproxy;
+package com.jolocom.webidproxy;
 
 import java.io.IOException;
 
@@ -22,10 +22,10 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.util.EntityUtils;
 
-import com.danubetech.webidproxy.ssl.MySSLSocketFactory;
-import com.danubetech.webidproxy.users.User;
-import com.danubetech.webidproxy.users.Users;
-import com.danubetech.webidproxy.users.UsersFileImpl;
+import com.jolocom.webidproxy.ssl.MySSLSocketFactory;
+import com.jolocom.webidproxy.users.User;
+import com.jolocom.webidproxy.users.Users;
+import com.jolocom.webidproxy.users.UsersFileImpl;
 
 public class WebIDProxyServlet extends HttpServlet {
 

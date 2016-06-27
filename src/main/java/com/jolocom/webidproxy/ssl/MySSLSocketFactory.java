@@ -1,4 +1,4 @@
-package com.danubetech.webidproxy.ssl;
+package com.jolocom.webidproxy.ssl;
 import java.io.File;
 import java.io.IOException;
 
@@ -34,7 +34,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 
-import com.danubetech.webidproxy.users.User;
+import com.jolocom.webidproxy.users.User;
 
 public class MySSLSocketFactory {
 

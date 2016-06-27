@@ -1,4 +1,4 @@
-package com.danubetech.webidproxy.users;
+package com.jolocom.webidproxy.users;
 
 public interface Users {
 

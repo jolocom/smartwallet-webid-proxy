@@ -1,4 +1,4 @@
-package com.danubetech.webidproxy.users;
+package com.jolocom.webidproxy.users;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.danubetech.webidproxy.config.Config;
-import com.danubetech.webidproxy.ssl.MySSLSocketFactory;
+import com.jolocom.webidproxy.config.Config;
+import com.jolocom.webidproxy.ssl.MySSLSocketFactory;
 
 public class WebIDRegistration {
 

@@ -1,4 +1,4 @@
-package com.danubetech.webidproxy.ssl;
+package com.jolocom.webidproxy.ssl;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.Security;
