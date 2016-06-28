@@ -114,11 +114,11 @@ public class MySSLSocketFactory {
 		@Override
 		public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
 
-			log.debug("<< REQUEST: " + request.getRequestLine());
+			log.debug("PROXY>>LDP REQUEST: " + request.getRequestLine());
 
 			for (Header header : request.getAllHeaders()) {
 
-				log.debug("<< HEADER: " + header.getName() + " -> " + header.getValue());
+				log.debug("PROXY>>LDP HEADER: " + header.getName() + " -> " + header.getValue());
 			}
 		}
 	};
@@ -128,11 +128,11 @@ public class MySSLSocketFactory {
 		@Override
 		public void process(HttpResponse response, HttpContext context) throws HttpException, IOException {
 
-			log.debug(">> RESPONSE: " + response.getStatusLine());
+			log.debug("LDP>>PROXY RESPONSE: " + response.getStatusLine());
 
 			for (Header header : response.getAllHeaders()) {
 
-				log.debug(">> HEADER: " + header.getName() + " -> " + header.getValue());
+				log.debug("LDP>>PROXY HEADER: " + header.getName() + " -> " + header.getValue());
 			}
 		}
 	};
