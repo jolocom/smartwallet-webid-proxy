@@ -3,7 +3,6 @@ package com.jolocom.webidproxy;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -11,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class LogoutServlet extends HttpServlet {
+public class LogoutServlet extends NonProxyServlet {
 
 	private static final long serialVersionUID = 3793048689633131588L;
 
@@ -23,5 +22,7 @@ public class LogoutServlet extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		if (session != null) session.invalidate();
 		log.debug("User successfully logged out.");
+
+		this.success(request, response);
 	}
 }

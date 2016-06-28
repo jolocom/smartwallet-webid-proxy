@@ -3,14 +3,13 @@ package com.jolocom.webidproxy;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class RegisterServlet extends HttpServlet {
+public class RegisterServlet extends NonProxyServlet {
 
 	private static final long serialVersionUID = 3793048689633131588L;
 
@@ -44,5 +43,7 @@ public class RegisterServlet extends HttpServlet {
 		request.getSession().setAttribute("username", username);
 		request.getSession().setAttribute("HTTPCLIENT", null);
 		log.debug("User " + username + " successfully registered and logged in.");
+
+		this.success(request, response);
 	}
 }
