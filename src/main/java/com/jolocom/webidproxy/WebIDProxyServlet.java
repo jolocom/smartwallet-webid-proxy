@@ -33,7 +33,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 	private static final Log log = LogFactory.getLog(WebIDProxyServlet.class);
 
-	public static final String[] COPY_HEADERS = new String[] { "Accept", "Content-Type" };
+	public static final String[] COPY_HEADERS = new String[] { "Accept", "Content-Type", "Origin" };
 
 	public static Users users = null;
 
