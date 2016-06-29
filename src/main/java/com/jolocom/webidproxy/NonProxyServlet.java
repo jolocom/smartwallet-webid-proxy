@@ -17,7 +17,14 @@ public abstract class NonProxyServlet extends HttpServlet {
 		if (request.getHeader("Origin") != null) {
 
 			response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+		} else {
+
+			response.setHeader("Access-Control-Allow-Origin", "*");
 		}
+
+		response.setHeader("Access-Control-Allow-Credentials", "true");
+		response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+		response.setHeader("Access-Control-Allow-Headers", "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Link");
 
 		if (contentType != null) {
 
