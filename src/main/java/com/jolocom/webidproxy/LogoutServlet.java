@@ -23,6 +23,6 @@ public class LogoutServlet extends NonProxyServlet {
 		if (session != null) session.invalidate();
 		log.debug("User successfully logged out.");
 
-		this.success(request, response);
+		this.success(request, response, null, null);
 	}
 }

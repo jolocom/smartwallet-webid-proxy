@@ -36,6 +36,8 @@ public class LoginServlet extends NonProxyServlet {
 		request.getSession().setAttribute("HTTPCLIENT", null);
 		log.debug("User " + username + " successfully logged in.");
 
-		this.success(request, response);
+		String content = "{\"webid\":\"" + user.getWebid() + "\"}";
+
+		this.success(request, response, content, "application/json");
 	}
 }
