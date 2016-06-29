@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.jolocom.webidproxy.users.User;
+import com.jolocom.webidproxy.util.Util;
 
 public class LoginServlet extends NonProxyServlet {
 
@@ -22,6 +23,12 @@ public class LoginServlet extends NonProxyServlet {
 
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+
+		if (! Util.isAlphaNumeric(username)) {
+
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Username " + username + " is not alphanumeric.");
+			log.debug("Username " + username + " is not alphanumeric.");
+		}
 
 		User user = WebIDProxyServlet.users.get(username);
 

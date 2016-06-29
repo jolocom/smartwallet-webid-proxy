@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.jolocom.webidproxy.users.User;
+import com.jolocom.webidproxy.util.Util;
 
 public class RegisterServlet extends NonProxyServlet {
 
@@ -25,6 +26,12 @@ public class RegisterServlet extends NonProxyServlet {
 		String name = request.getParameter("name");
 		String email = request.getParameter("email");
 
+		if (! Util.isAlphaNumeric(username)) {
+
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Username " + username + " is not alphanumeric.");
+			log.debug("Username " + username + " is not alphanumeric.");
+		}
+
 		if (WebIDProxyServlet.users.exists(username)) {
 
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User " + username + " exists already.");
@@ -32,7 +39,7 @@ public class RegisterServlet extends NonProxyServlet {
 			return;
 		}
 
-/*		try {
+		/*		try {
 
 			KeyStore ks = KeyStore.getInstance(CLIENT_KEYSTORE_TYPE);
 			ks.load(new FileInputStream(CLIENT_KEYSTORE_PATH), CLIENT_KEYSTORE_PASS.toCharArray());
