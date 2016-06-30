@@ -16,3 +16,11 @@ Mandatory Script paramters:
 Run:
 
 ./sh generate-ssl-for-webid.sh markus jolocom.de /root
+
+to generate certificate for
+
+https://markus.webid.jolocom.de
+
+Warning: 
+
+Use this script at your own risk. There is no validation of paramters (yet).
