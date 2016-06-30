@@ -1,4 +1,4 @@
-This script generates an SSL certificate for a given Webid in the context of an NGINX webserver.
+This script generates an SSL certificate for a given Webid in the context of a NGINX webserver.
 
 Precondition: 
 
@@ -7,7 +7,7 @@ Precondition:
 3. certbot-auto is installed
 2. copy webid-proxy-config-template to nginx config path (usually /etc/nginx)
 
-Mandatory Script paramters:
+Mandatory Script parameters:
 
 1. Username (e.g. markus)
 2. Domain (e.g. jolocom.de)
