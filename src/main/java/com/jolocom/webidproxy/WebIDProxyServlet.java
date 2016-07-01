@@ -17,6 +17,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.InputStreamEntity;
@@ -41,6 +42,39 @@ public class WebIDProxyServlet extends HttpServlet {
 	public void init() {
 
 		users = new UsersFileImpl();
+	}
+
+	@Override
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		if (request.getMethod().equals("PATCH")) {
+
+			this.doPatch(request, response);
+		} else {
+
+			super.service(request, response);
+		}
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		String target = request.getParameter("url");
+		User user = loadUser(request);
+		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
+
+		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
+		HttpGet httpGet = new HttpGet(target);
+		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpGet.setHeader(copyHeader, request.getHeader(copyHeader));
+		HttpResponse httpResponse = httpClient.execute(httpGet);
+
+		log.info("PROXY GET " + target + " -> " + httpResponse.getStatusLine());
+		HttpEntity entity = httpResponse.getEntity();
+
+		response.setStatus(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase());
+		for (Header header : httpResponse.getAllHeaders()) response.addHeader(header.getName(), header.getValue());
+		IOUtils.copy(entity.getContent(), response.getOutputStream());
+		EntityUtils.consume(entity);
 	}
 
 	@Override
@@ -87,19 +121,19 @@ public class WebIDProxyServlet extends HttpServlet {
 		EntityUtils.consume(entity);
 	}
 
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String target = request.getParameter("url");
 		User user = loadUser(request);
 		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
-		HttpGet httpGet = new HttpGet(target);
-		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpGet.setHeader(copyHeader, request.getHeader(copyHeader));
-		HttpResponse httpResponse = httpClient.execute(httpGet);
+		HttpPatch httpPatch = new HttpPatch(target);
+		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpPatch.setHeader(copyHeader, request.getHeader(copyHeader));
+		httpPatch.setEntity(new InputStreamEntity(request.getInputStream()));
+		HttpResponse httpResponse = httpClient.execute(httpPatch);
 
-		log.info("PROXY GET " + target + " -> " + httpResponse.getStatusLine());
+		log.info("PROXY PATCH " + target + " -> " + httpResponse.getStatusLine());
 		HttpEntity entity = httpResponse.getEntity();
 
 		response.setStatus(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase());
@@ -143,7 +177,7 @@ public class WebIDProxyServlet extends HttpServlet {
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Credentials", "true");
 		response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Cache-Control, Expires, X-Cache, X-HTTP-Method-Override, Accept");
-		response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS");
+		response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, PATCH, DELETE, TRACE, OPTIONS");
 	}
 
 	private static User loadUser(HttpServletRequest request) {
