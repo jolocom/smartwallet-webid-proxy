@@ -34,7 +34,6 @@ function remove_file() {
  fi
 }
 
-
 #################
 ### FUNCTIONS ###
 #################
@@ -54,12 +53,17 @@ function cleaning_exit() {
 function check_args() {
   if [ -z $opt_user ]; then
     exit_usage "Username is missing"
+  elif [[ ! "$opt_user" =~ ^[0-9a-z]{3,10}$ ]]; then
+    exit_usage "Username must may only contain 3-10 alpha numeric lowercase characters"
   fi
-
-  # TODO: username must be alphanumeric
 
   if [ -z $opt_domain ]; then
     exit_usage "Domain is missing"
+  else
+    # http://stackoverflow.com/a/32910760
+    if [[ -z `echo $opt_domain | grep -P '(?=^.{1,254}$)(^(?>(?!\d+\.)[a-zA-Z0-9_\-]{1,63}\.?)+(?:[a-zA-Z]{2,})$)'` ]]; then
+      exit_usage "Not a valid domain"
+    fi
   fi
 
   # TODO: domain must be valid
