@@ -1,4 +1,4 @@
-This script generates an SSL certificate for a given Webid in the context of an NGINX webserver.
+This script generates an SSL certificate for a given Webid in the context of a NGINX webserver.
 
 Precondition: 
 
@@ -27,7 +27,7 @@ Example:
 
 ./bash generate-ssl-for-webid.sh -u markus -d jolocom.de -c /root/certbot-auto -q
 
-to generate certificate without interaction
+to quietly generate nginx config with SSL certificate for WebID
 
 https://markus.webid.jolocom.de
 
