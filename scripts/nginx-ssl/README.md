@@ -9,6 +9,7 @@ Precondition:
 
 Script paramters:
 
+```
 OPTIONS
   -u username
      the WebId username (e.g. markus)
@@ -22,6 +23,7 @@ OPTIONS
      execute script without confirmation quietly
   -h 
      show this help
+```
 
 Example: 
 
