@@ -7,17 +7,27 @@ Precondition:
 3. certbot-auto is installed
 2. copy webid-proxy-config-template to nginx config path (usually /etc/nginx)
 
-Mandatory Script paramters:
+Script paramters:
 
-1. Username (e.g. markus)
-2. Domain (e.g. jolocom.de)
-3. Path of certbot-auto (e.g. /root)
+OPTIONS
+  -u username
+     the WebId username (e.g. markus)
+  -d domain
+     the WebId root domain (e.g. jolocom.de)
+  -c certbot
+     the path to certbot executable (default: /usr/bin/certbot)
+  -w webrootpath
+     the path to webroot (default: /usr/share/nginx/html)
+  -q 
+     execute script without confirmation quietly
+  -h 
+     show this help
 
-Run:
+Example: 
 
-./sh generate-ssl-for-webid.sh markus jolocom.de /root
+./bash generate-ssl-for-webid.sh -u markus -d jolocom.de -c /root/certbot-auto -q
 
-to generate certificate for
+to generate certificate without interaction
 
 https://markus.webid.jolocom.de
 
