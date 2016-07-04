@@ -15,7 +15,8 @@ public class GenerateSslScript {
 	private static final Log log = LogFactory.getLog(GenerateSslScript.class);
 
 	public static final String SCRIPT_PATH = "./scripts/nginx-ssl/generate-ssl-for-webid.sh";
-	public static final String CERTBOT_PATH = "/root";
+	public static final String CERTBOT_PATH = "/root/certbot-auto";
+	public static final String WEBROOT_PATH = "/usr/share/nginx/html";
 
 	public static void execute(String username) throws IOException, InterruptedException {
 
@@ -23,9 +24,11 @@ public class GenerateSslScript {
 
 		StringBuffer line = new StringBuffer();
 		line.append(SCRIPT_PATH);
-		line.append(" " + username);
-		line.append(" " + webIdHostWithoutPort);
-		line.append(" " + CERTBOT_PATH);
+		line.append(" -u " + username);
+		line.append(" -d " + webIdHostWithoutPort);
+		line.append(" -c " + CERTBOT_PATH);
+		line.append(" -w " + WEBROOT_PATH);
+		line.append(" -q");
 
 		if (log.isDebugEnabled()) log.debug("Executing script " + line.toString());
 

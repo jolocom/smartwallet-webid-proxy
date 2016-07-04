@@ -9,6 +9,7 @@ Precondition:
 
 Script paramters:
 
+```
 OPTIONS
   -u username
      the WebId username (e.g. markus)
@@ -22,10 +23,11 @@ OPTIONS
      execute script without confirmation quietly
   -h 
      show this help
+```
 
 Example: 
 
-./bash generate-ssl-for-webid.sh -u markus -d jolocom.de -c /root/certbot-auto -q
+`./bash generate-ssl-for-webid.sh -u markus -d jolocom.de -c /root/certbot-auto -q`
 
 to quietly generate nginx config with SSL certificate for WebID
 
