@@ -19,10 +19,12 @@ public class GenerateSslScript {
 
 	public static void execute(String username) throws IOException, InterruptedException {
 
+		final String webIdHostWithoutPort = Config.webidHost().substring(0,  Config.webidHost().indexOf(':')); 
+
 		StringBuffer line = new StringBuffer();
 		line.append(SCRIPT_PATH);
 		line.append(" " + username);
-		line.append(" " + Config.webidHost());
+		line.append(" " + webIdHostWithoutPort);
 		line.append(" " + CERTBOT_PATH);
 
 		if (log.isDebugEnabled()) log.debug("Executing script " + line.toString());
