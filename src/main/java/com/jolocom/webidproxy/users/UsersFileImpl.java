@@ -18,6 +18,8 @@ import java.util.Properties;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.jolocom.webidproxy.scripts.GenerateSslScript;
+
 public class UsersFileImpl implements Users {
 
 	public static File DIR = new File("./users/");
@@ -42,21 +44,37 @@ public class UsersFileImpl implements Users {
 
 		User user = new User(username, password, name, email);
 
+		// register user in Solid
+
 		try {
 
 			WebIDRegistration.registerWebIDAccount(user);
-		} catch (IOException ex) {
+		} catch (Exception ex) {
 
-			throw new RuntimeException(ex.getMessage(), ex);
+			throw new RuntimeException("Cannot register WebID: " + ex.getMessage(), ex);
 		}
+
+		// save user locally
 
 		try {
 
 			save(user);
 		} catch (Exception ex) {
 
-			throw new RuntimeException(ex.getMessage(), ex);
+			throw new RuntimeException("Cannot register user: " + ex.getMessage(), ex);
 		}
+
+		// run NGINX SSL script
+
+		try {
+
+			GenerateSslScript.execute(username);
+		} catch (Exception ex) {
+
+			throw new RuntimeException("Cannot set up Let's Encrypt: " + ex.getMessage(), ex);
+		}
+
+		// done
 
 		return user;
 	}
