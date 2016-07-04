@@ -1,9 +1,12 @@
 package com.jolocom.webidproxy.users;
 
+import java.io.ByteArrayOutputStream;
+import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Properties;
 
 import org.apache.commons.codec.binary.Base64;
+import org.bouncycastle.mozilla.SignedPublicKeyAndChallenge;
 
 import com.jolocom.webidproxy.config.Config;
 import com.jolocom.webidproxy.ssl.SSLGenerator;
@@ -51,11 +54,11 @@ public class User {
 
 		try {
 
-			oracle.security.crypto.core.KeyPair keyPair = SSLGenerator.generateKeyPair(keyLength);
-			oracle.security.crypto.cert.SPKAC spkac = SSLGenerator.generateSPKAC(keyPair);
-			X509Certificate cert = SSLGenerator.generateCertificate("CN=" + "WebID" + ", O=WebID, ST=Some-State, C=US", this.webid, SSLGenerator.convertKeyPair(keyPair), certDays, "X509");
+			KeyPair keyPair = SSLGenerator.generateKeyPair(keyLength);
+			SignedPublicKeyAndChallenge signedPublicKeyAndChallenge = SSLGenerator.generateSignedPublicKeyAndChallenge(keyPair);
+			X509Certificate cert = SSLGenerator.generateCertificate("CN=" + "WebID" + ", O=WebID, ST=Some-State, C=US", this.webid, keyPair, certDays, "X509");
 
-			this.spkac = spkac.toBase64();
+			this.spkac = "SPKAC=" + Base64.encodeBase64String(signedPublicKeyAndChallenge.getEncoded());
 			this.privatekey = Base64.encodeBase64String(keyPair.getPrivate().getEncoded());
 			this.certificate = Base64.encodeBase64String(cert.getEncoded());
 		} catch (Exception ex) {

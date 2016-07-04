@@ -1,16 +1,31 @@
 package com.jolocom.webidproxy.ssl;
 import java.math.BigInteger;
+import java.security.GeneralSecurityException;
 import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.Security;
+import java.security.Signature;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DERBitString;
+import org.bouncycastle.asn1.DERIA5String;
+import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.mozilla.PublicKeyAndChallenge;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.mozilla.SignedPublicKeyAndChallenge;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
 
@@ -21,12 +36,12 @@ public class SSLGenerator {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 
-	public static oracle.security.crypto.core.KeyPair generateKeyPair(int keyLength) {
+	public static KeyPair generateKeyPair(int keyLength) {
 
 		try {
 
-			oracle.security.crypto.core.KeyPairGenerator keyPairGenerator = new oracle.security.crypto.core.RSAKeyPairGenerator();
-			keyPairGenerator.initialize(keyLength, oracle.security.crypto.core.RandomBitsSource.getDefault());
+			KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", "BC");
+			keyPairGenerator.initialize(keyLength);
 
 			return keyPairGenerator.generateKeyPair();
 		} catch (Exception ex) {
@@ -35,20 +50,50 @@ public class SSLGenerator {
 		}
 	}
 
-	public static oracle.security.crypto.cert.SPKAC generateSPKAC(oracle.security.crypto.core.KeyPair keyPair) {
+	public static SignedPublicKeyAndChallenge generateSignedPublicKeyAndChallenge(KeyPair keyPair) throws GeneralSecurityException {
 
-		try {
+		String challengeString = "challenge";
 
-			return new oracle.security.crypto.cert.SPKAC(keyPair);
-		} catch (Exception ex) {
+		PublicKeyAndChallenge publicKeyAndChallenge = makePublicKeyAndChallenge(keyPair.getPublic(), challengeString);
+		SignedPublicKeyAndChallenge signedPublicKeyAndChallenge = makeSignedPublicKeyAndChallenge(publicKeyAndChallenge, keyPair.getPrivate());
 
-			throw new RuntimeException(ex.getMessage(), ex);
-		}
+		return signedPublicKeyAndChallenge;
 	}
 
-	public static KeyPair convertKeyPair(oracle.security.crypto.core.KeyPair keyPair) {
+	private static SubjectPublicKeyInfo makeSubjectPublicKeyInfo(PublicKey publicKey) {
 
-		return new KeyPair(keyPair.getPublic(), keyPair.getPrivate());
+		return new SubjectPublicKeyInfo(ASN1Sequence.getInstance(publicKey.getEncoded()));
+	}
+
+	private static PublicKeyAndChallenge makePublicKeyAndChallenge(PublicKey publicKey, String challengeString) {
+
+		SubjectPublicKeyInfo spki = makeSubjectPublicKeyInfo(publicKey);
+		DERIA5String challenge = new DERIA5String(challengeString);
+
+		ASN1Encodable[] objects = new ASN1Encodable[2];
+		objects[0] = spki;
+		objects[1] = challenge;
+
+		return new PublicKeyAndChallenge(new DERSequence(objects));
+	}
+
+	private static SignedPublicKeyAndChallenge makeSignedPublicKeyAndChallenge(PublicKeyAndChallenge publicKeyAndChallenge, PrivateKey privateKey) throws GeneralSecurityException {
+
+		Signature sig = Signature.getInstance("MD5withRSA", "BC");
+		sig.initSign(privateKey, new SecureRandom());
+		sig.update(publicKeyAndChallenge.getDEREncoded());
+		byte[] sigBytes = sig.sign();
+
+		AlgorithmIdentifier signatureAlgorithm = AlgorithmIdentifier.getInstance("1.2.840.113549.1.1.4");
+
+		DERBitString signature = new DERBitString(sigBytes);
+
+		ASN1Encodable[] objects = new ASN1Encodable[3];
+		objects[0] = publicKeyAndChallenge;
+		objects[1] = signatureAlgorithm;
+		objects[2] = new DERBitString(signature);
+
+		return new SignedPublicKeyAndChallenge(new DERSequence(objects).getDEREncoded());
 	}
 
 	public static X509Certificate generateCertificate(String dn, String altname, KeyPair keyPair, int days, String algorithm) {

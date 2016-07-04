@@ -65,20 +65,20 @@ public class UsersFileImpl implements Users {
 			WebIDRegistration.registerWebIDAccount(user);
 		} catch (Exception ex) {
 
-			delete(user);
+			//delete(user);
 			throw new RuntimeException("Cannot register WebID: " + ex.getMessage(), ex);
 		}
 
 		// run NGINX SSL script
 
-		try {
+		/*try {
 
 			GenerateSslScript.execute(username);
 		} catch (Exception ex) {
 
 			delete(user);
 			throw new RuntimeException("Cannot set up Let's Encrypt: " + ex.getMessage(), ex);
-		}
+		}*/
 
 		// done
 

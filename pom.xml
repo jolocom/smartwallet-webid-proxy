@@ -135,20 +135,6 @@
 			<version>1.46</version>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
-			<groupId>osdt_core</groupId>
-			<artifactId>osdt_core</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/osdt_core.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>osdt_cert</groupId>
-			<artifactId>osdt_cert</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/osdt_cert.jar</systemPath>
-		</dependency>
 
 	</dependencies>
 
