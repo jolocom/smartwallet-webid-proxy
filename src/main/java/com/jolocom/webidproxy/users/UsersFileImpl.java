@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.KeyFactory;
 import java.security.KeyStore;
@@ -17,10 +16,14 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Properties;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.jolocom.webidproxy.scripts.GenerateSslScript;
 
 public class UsersFileImpl implements Users {
+
+	private static final Log log = LogFactory.getLog(UsersFileImpl.class);
 
 	public static File DIR = new File("./users/");
 
@@ -44,16 +47,6 @@ public class UsersFileImpl implements Users {
 
 		User user = new User(username, password, name, email);
 
-		// register user in Solid
-
-		try {
-
-			WebIDRegistration.registerWebIDAccount(user);
-		} catch (Exception ex) {
-
-			throw new RuntimeException("Cannot register WebID: " + ex.getMessage(), ex);
-		}
-
 		// save user locally
 
 		try {
@@ -61,7 +54,19 @@ public class UsersFileImpl implements Users {
 			save(user);
 		} catch (Exception ex) {
 
+			delete(user);
 			throw new RuntimeException("Cannot register user: " + ex.getMessage(), ex);
+		}
+
+		// register user in Solid
+
+		try {
+
+			WebIDRegistration.registerWebIDAccount(user);
+		} catch (Exception ex) {
+
+			delete(user);
+			throw new RuntimeException("Cannot register WebID: " + ex.getMessage(), ex);
 		}
 
 		// run NGINX SSL script
@@ -71,6 +76,7 @@ public class UsersFileImpl implements Users {
 			GenerateSslScript.execute(username);
 		} catch (Exception ex) {
 
+			delete(user);
 			throw new RuntimeException("Cannot set up Let's Encrypt: " + ex.getMessage(), ex);
 		}
 
@@ -103,7 +109,11 @@ public class UsersFileImpl implements Users {
 		properties.load(reader);
 		reader.close();
 
-		return User.fromProperties(properties);
+		// done
+
+		User user = User.fromProperties(properties);
+		log.debug("Loaded user " + user);
+		return user;
 	}
 
 	private static void save(User user) throws Exception {
@@ -135,5 +145,22 @@ public class UsersFileImpl implements Users {
 		ks.load(null, CLIENT_KEYSTORE_PASS.toCharArray());
 		ks.setKeyEntry(user.getUsername(), privateKey, CLIENT_KEYSTORE_PASS.toCharArray(), new Certificate[] { certificate });
 		ks.store(new FileOutputStream(ksfile), CLIENT_KEYSTORE_PASS.toCharArray());
+
+		// done
+
+		log.debug("Saved user " + user);
+	}
+
+	private static void delete(User user) {
+
+		File file = new File(DIR, user.getUsername());
+		File ksfile = new File(DIR, user.getUsername() + ".p12");
+
+		if (file.exists()) file.delete();
+		if (ksfile.exists()) ksfile.delete();
+
+		// done
+
+		log.debug("Deleted user " + user);
 	}
 }
