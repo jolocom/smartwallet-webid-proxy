@@ -1,28 +1,18 @@
 Traceback (most recent call last):
   File "/usr/lib/python-exec/python2.7/certbot", line 9, in <module>
     load_entry_point('certbot==0.6.0', 'console_scripts', 'certbot')()
-  File "/usr/lib64/python2.7/site-packages/certbot/main.py", line 649, in main
-    args = cli.prepare_and_parse_args(plugins, cli_args)
-  File "/usr/lib64/python2.7/site-packages/certbot/cli.py", line 779, in prepare_and_parse_args
-    return helpful.parse_args()
-  File "/usr/lib64/python2.7/site-packages/certbot/cli.py", line 330, in parse_args
-    parsed_args = self.parser.parse_args(self.args)
-  File "/usr/lib64/python2.7/site-packages/configargparse.py", line 216, in parse_args
-    env_vars = env_vars)
-  File "/usr/lib64/python2.7/site-packages/configargparse.py", line 349, in parse_known_args
-    self, args=args, namespace=namespace)
-  File "/usr/lib64/python2.7/argparse.py", line 1733, in parse_known_args
-    namespace, args = self._parse_known_args(args, namespace)
-  File "/usr/lib64/python2.7/argparse.py", line 1939, in _parse_known_args
-    start_index = consume_optional(start_index)
-  File "/usr/lib64/python2.7/argparse.py", line 1879, in consume_optional
-    take_action(action, args, option_string)
-  File "/usr/lib64/python2.7/argparse.py", line 1807, in take_action
-    action(self, namespace, argument_values, option_string)
-  File "/usr/lib64/python2.7/site-packages/certbot/cli.py", line 909, in __call__
-    add_domains(namespace, domain)
-  File "/usr/lib64/python2.7/site-packages/certbot/cli.py", line 929, in add_domains
-    domain = le_util.enforce_domain_sanity(domain.strip())
-  File "/usr/lib64/python2.7/site-packages/certbot/le_util.py", line 343, in enforce_domain_sanity
-    raise errors.ConfigurationError("Requested domain {0} is not a FQDN".format(domain))
-ConfigurationError: Requested domain .webid is not a FQDN
+  File "/usr/lib64/python2.7/site-packages/certbot/main.py", line 663, in main
+    setup_logging(config, _cli_log_handler, logfile='letsencrypt.log')
+  File "/usr/lib64/python2.7/site-packages/certbot/main.py", line 576, in setup_logging
+    config, logfile=logfile, fmt=fmt)
+  File "/usr/lib64/python2.7/site-packages/certbot/main.py", line 547, in setup_log_file_handler
+    log_file_path, maxBytes=2 ** 20, backupCount=10)
+  File "/usr/lib64/python2.7/logging/handlers.py", line 117, in __init__
+    BaseRotatingHandler.__init__(self, filename, mode, encoding, delay)
+  File "/usr/lib64/python2.7/logging/handlers.py", line 64, in __init__
+    logging.FileHandler.__init__(self, filename, mode, encoding, delay)
+  File "/usr/lib64/python2.7/logging/__init__.py", line 911, in __init__
+    StreamHandler.__init__(self, self._open())
+  File "/usr/lib64/python2.7/logging/__init__.py", line 941, in _open
+    stream = open(self.baseFilename, self.mode)
+IOError: [Errno 13] Permission denied: '/var/log/letsencrypt/letsencrypt.log'

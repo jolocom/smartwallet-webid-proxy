@@ -47,6 +47,8 @@ function cleaning_exit() {
  remove_file "/etc/nginx/sites-available/${webid}"
 
  remove_file "/etc/nginx/sites-enabled/${webid}"
+
+ #TODO: clean up certificate
 }
 
 
@@ -66,9 +68,13 @@ function check_args() {
     fi
   fi
 
-  # TODO: domain must be valid
+  if [ ! -e $opt_certbot ]; then
+    exit_usage "Certbot not found ($opt_certbot)"
 
-  # TODO: cerbot must exist and be executable
+    if [ ! -x $opt_certbot ]; then
+      exit_usage "Certbot not executable ($opt_certbot)"
+    fi
+  fi
 
   if [ ! -d $opt_webrootpath ]; then
     exit_usage "Webroot path does not exist"
@@ -117,9 +123,9 @@ function show_usage() {
   echo -e "  \e[1m-d\e[0m \e[4mdomain\e[0m" >&2 
   echo -e "     the WebId root domain (e.g. jolocom.de)" >&2
   echo -e "  \e[1m-c\e[0m \e[4mcertbot\e[0m" >&2 
-  echo -e "     the path to certbot executable (default: /usr/bin/certbot)" >&2
+  echo -e "     the path to certbot executable (default: $certbot_default)" >&2
   echo -e "  \e[1m-w\e[0m \e[4mwebrootpath\e[0m" >&2 
-  echo -e "     the path to webroot (default: /usr/share/nginx/html)" >&2
+  echo -e "     the path to webroot (default: $webrootpath_default)" >&2
   echo -e "  \e[1m-q\e[0m \e[4m\e[0m" >&2 
   echo -e "     execute script without confirmation quietly" >&2
   echo -e "  \e[1m-h\e[0m \e[0m" >&2 
@@ -151,9 +157,10 @@ function exit_error() {
 ########################
 ### GLOBAL VARIABLES ###
 ########################
-
-opt_certbot=/usr/bin/certbot
-opt_webrootpath=/usr/share/nginx/html
+certbot_default=/usr/bin/certbot
+webrootpath_default=/usr/share/nginx/html
+opt_certbot=$certbot_default
+opt_webrootpath=$webrootpath_default
 opt_quiet=false
 
 ##############
