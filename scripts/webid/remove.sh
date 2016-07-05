@@ -31,7 +31,7 @@ function remove() {
     confirm=false
     read confirm && echo
 
-    if [ "${confirm}" != yes ]; then
+    if [ "${confirm}" == yes ]; then
       rm -rf $1 2>/dev/null
     fi
   else
