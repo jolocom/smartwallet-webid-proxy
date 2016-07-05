@@ -20,7 +20,7 @@ public class GenerateSslScript {
 
 	public static void execute(String username) throws IOException, InterruptedException {
 
-		final String domain = Config.webidHost().contains(":") ? Config.webidHost().substring(0,  Config.webidHost().indexOf(':')) : Config.webidHost();
+		final String domain = (Config.webidHost().indexOf(':') > 0) ? Config.webidHost().substring(0,  Config.webidHost().indexOf(':')) : Config.webidHost();
 
 		StringBuffer line = new StringBuffer();
 		line.append(SCRIPT_PATH);
