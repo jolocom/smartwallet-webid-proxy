@@ -132,7 +132,7 @@ function exit_error() {
 
   if [ "${2}" == usage ]; then
     if [ -z "${1}" ]; then
-      echo -e "\n       \e[7m\e[1m WebID Proxy Nginx/SSL remover \e[0m\n"
+      echo -e "\n       \e[7m\e[1m WebID Proxy Remover \e[0m\n"
     else
       echo
     fi
