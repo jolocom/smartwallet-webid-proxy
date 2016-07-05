@@ -76,6 +76,10 @@ function check_args() {
     fi
   fi
 
+  if [ ! -d $opt_nginxconfpath ]; then
+    exit_usage "Nginx config path does not exist"
+  fi
+
   if [ ! -d $opt_webrootpath ]; then
     exit_usage "Webroot path does not exist"
   fi
@@ -100,7 +104,7 @@ function set_nginx_config() {
 }
 
 function create_nginx_config() {
-  sed -e "s/_USER_/$opt_user/g; s/_DOMAIN_/$opt_domain/g;" webid-user-config-template > $nginx_conf_available
+  sed -e "s/_USER_/$opt_user/g; s/_DOMAIN_/$opt_domain/g;" "${DIR}/webid-user-config-template" > $nginx_conf_available
   ln -s  $nginx_conf_available $nginx_conf_enabled
 }
 
@@ -109,7 +113,7 @@ function generate_certificate() {
 }
 
 function update_nginx_config() {
-  sed -e "s/_USER_/$opt_user/g; s/_DOMAIN_/$opt_domain/g;" webid-user-ssl-config-template > $nginx_conf_available
+  sed -e "s/_USER_/$opt_user/g; s/_DOMAIN_/$opt_domain/g;" "${DIR}/webid-user-ssl-config-template" > $nginx_conf_available
 }
 
 function reload_nginx() {
@@ -124,6 +128,8 @@ function show_usage() {
   echo -e "     the WebId root domain (e.g. jolocom.de)" >&2
   echo -e "  \e[1m-c\e[0m \e[4mcertbot\e[0m" >&2 
   echo -e "     the path to certbot executable (default: $certbot_default)" >&2
+  echo -e "  \e[1m-n\e[0m \e[4mnginxconfpath\e[0m" >&2 
+  echo -e "     the path to nginx config (default: $nginxconfpath_default)" >&2
   echo -e "  \e[1m-w\e[0m \e[4mwebrootpath\e[0m" >&2 
   echo -e "     the path to webroot (default: $webrootpath_default)" >&2
   echo -e "  \e[1m-q\e[0m \e[4m\e[0m" >&2 
@@ -157,10 +163,13 @@ function exit_error() {
 ########################
 ### GLOBAL VARIABLES ###
 ########################
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 certbot_default=/usr/bin/certbot
 webrootpath_default=/usr/share/nginx/html
+nginxconfpath_default=/etc/nginx
 opt_certbot=$certbot_default
 opt_webrootpath=$webrootpath_default
+opt_nginxconfpath=$nginxconfpath_default
 opt_quiet=false
 
 ##############
@@ -169,11 +178,12 @@ opt_quiet=false
 
 trap 'error "${BASH_SOURCE}" "${LINENO}"' ERR
 
-while getopts "u:d:c:w:qh" opt; do
+while getopts "u:d:c:n:w:qh" opt; do
   case $opt in
     u) opt_user=$OPTARG ;;
     d) opt_domain=$OPTARG ;;
     c) opt_certbot=$OPTARG ;;
+    n) opt_nginxconfpath=$OPTARG ;;
     w) opt_webrootpath=$OPTARG ;;
     q) opt_quiet=true ;;
     h) exit_usage ;;
