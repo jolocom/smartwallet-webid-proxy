@@ -53,12 +53,24 @@ function cleaning_exit() {
 
 
 function check_args() {
+  validate_user
+  validate_domain
+  validate_cerbot
+  validate_nginxconfpath
+  validate_webrootpath
+}
+
+function validate_user() {
+  opt_user=${opt_user,,} # ensure lowercase
   if [ -z $opt_user ]; then
     exit_usage "Username is missing"
   elif [[ ! "$opt_user" =~ ^[0-9a-z]{3,10}$ ]]; then
     exit_usage "Username must may only contain 3-10 alpha numeric lowercase characters"
   fi
+}
 
+function validate_domain() {
+  opt_domain=${opt_domain,,} # ensure lowercase 
   if [ -z $opt_domain ]; then
     exit_usage "Domain is missing"
   else
@@ -67,7 +79,9 @@ function check_args() {
       exit_usage "Not a valid domain"
     fi
   fi
+}
 
+function validate_certbot() {
   if [ ! -e $opt_certbot ]; then
     exit_usage "Certbot not found ($opt_certbot)"
 
@@ -75,15 +89,20 @@ function check_args() {
       exit_usage "Certbot not executable ($opt_certbot)"
     fi
   fi
+}
 
-  if [ ! -d $opt_nginxconfpath ]; then
-    exit_usage "Nginx config path does not exist"
-  fi
-
+function validate_webrootpath() {
   if [ ! -d $opt_webrootpath ]; then
     exit_usage "Webroot path does not exist"
   fi
 }
+
+function validate_nginxconfpath() {
+  if [ ! -d $opt_nginxconfpath ]; then
+    exit_usage "Nginx config path does not exist"
+  fi
+}
+
 
 function set_webid() {
   webid="${opt_user}.webid.${opt_domain}"
@@ -195,16 +214,16 @@ preamble
 
 check_args
 
-set_webid
-
-set_nginx_config
-
-create_nginx_config
-
-reload_nginx
-
-generate_certificate
-
-update_nginx_config
-
-reload_nginx
+# set_webid
+#
+# set_nginx_config
+#
+# create_nginx_config
+#
+# reload_nginx
+#
+# generate_certificate
+#
+# update_nginx_config
+#
+# reload_nginx
