@@ -25,10 +25,10 @@ function preamble() {
   fi
 }
 
-function remove_file() {
- if [ -f $1 -o -h $1 ]; then
+function remove() {
+ if [ -f $1 -o -h $1 -o -d $1 ]; then
    echo "Removing ${1}"
-   rm $1
+   rm -rf $1
  else
    echo "Tried to remove ${1} but does not exist!"
  fi
@@ -44,11 +44,21 @@ function error() {
 }
 
 function cleaning_exit() {
- remove_file "/etc/nginx/sites-available/${webid}"
+  cleanup_nginx
+  cleanup_letsenrypt
+}
 
- remove_file "/etc/nginx/sites-enabled/${webid}"
+function cleanup_nginx() {
+ for f in sites-available sites-enabled; do
+  remove "${opt_nginxconfpath}/${f}/${webid}"
+ done
+}
 
- #TODO: clean up certificate
+function cleanup_letsenrypt() {
+ for f in live archive; do
+  remove "${opt_letsencryptconfpath}/${f}/${webid}"
+ done
+ remove "${opt_letsencryptconfpath}/renewal/${webid}.conf"
 }
 
 
@@ -147,6 +157,8 @@ function show_usage() {
   echo -e "     the WebId root domain (e.g. jolocom.de)" >&2
   echo -e "  \e[1m-c\e[0m \e[4mcertbot\e[0m" >&2 
   echo -e "     the path to certbot executable (default: $certbot_default)" >&2
+  echo -e "  \e[1m-l\e[0m \e[4mletsencryptconfpath\e[0m" >&2 
+  echo -e "     the path to letsencrypt config (default: $letsencryptconfpath_default)" >&2
   echo -e "  \e[1m-n\e[0m \e[4mnginxconfpath\e[0m" >&2 
   echo -e "     the path to nginx config (default: $nginxconfpath_default)" >&2
   echo -e "  \e[1m-w\e[0m \e[4mwebrootpath\e[0m" >&2 
@@ -186,9 +198,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 certbot_default=/usr/bin/certbot
 webrootpath_default=/usr/share/nginx/html
 nginxconfpath_default=/etc/nginx
+letsencryptconfpath_default=/etc/letsencrypt
+
 opt_certbot=$certbot_default
 opt_webrootpath=$webrootpath_default
 opt_nginxconfpath=$nginxconfpath_default
+opt_letsencryptconfpath=$letsencryptconfpath_default
 opt_quiet=false
 
 ##############
@@ -202,6 +217,7 @@ while getopts "u:d:c:n:w:qh" opt; do
     u) opt_user=$OPTARG ;;
     d) opt_domain=$OPTARG ;;
     c) opt_certbot=$OPTARG ;;
+    l) opt_letsencryptconfpath=$OPTARG ;;
     n) opt_nginxconfpath=$OPTARG ;;
     w) opt_webrootpath=$OPTARG ;;
     q) opt_quiet=true ;;
@@ -214,16 +230,16 @@ preamble
 
 check_args
 
-# set_webid
-#
-# set_nginx_config
-#
-# create_nginx_config
-#
-# reload_nginx
-#
-# generate_certificate
-#
-# update_nginx_config
-#
-# reload_nginx
+set_webid
+
+set_nginx_config
+
+create_nginx_config
+
+reload_nginx
+
+generate_certificate
+
+update_nginx_config
+
+reload_nginx
