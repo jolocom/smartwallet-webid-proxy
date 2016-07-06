@@ -65,7 +65,7 @@ function cleanup_letsenrypt() {
 function check_args() {
   validate_user
   validate_domain
-  validate_cerbot
+  validate_certbot
   validate_nginxconfpath
   validate_webrootpath
 }
