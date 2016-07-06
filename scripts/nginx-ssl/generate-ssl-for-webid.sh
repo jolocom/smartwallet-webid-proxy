@@ -118,23 +118,26 @@ function set_webid() {
   webid="${opt_user}.webid.${opt_domain}"
 }
 
-function set_nginx_config() {
- nginx_conf_available="/etc/nginx/sites-available/${webid}"
-
- if [ -f $nginx_conf_available ]; then
-   exit_error "Nginx config already exists ${nginx_conf_available}"
- fi
-
- nginx_conf_enabled="/etc/nginx/sites-enabled/${webid}"
-
- if [ -f $nginx_conf_enabled ]; then
-   exit_error "Nginx config already exists ${nginx_conf_enabled}"
- fi
-}
-
 function create_nginx_config() {
+  mkdir $opt_nginxconfpath/sites-available 2>/dev/null
+
+  nginx_conf_available=$opt_nginxconfpath/sites-available/$webid
+
+  if [ -f $nginx_conf_available ]; then
+    exit_error "Nginx config already exists ${nginx_conf_available}"
+  fi
+
+  mkdir $opt_nginxconfpath/sites-enabled 2>/dev/null
+
+  nginx_conf_enabled=$opt_nginxconfpath/sites-enabled/$webid
+  
+  if [ -f $nginx_conf_enabled ]; then
+    exit_error "Nginx config already exists ${nginx_conf_enabled}"
+  fi
+  
   sed -e "s/_USER_/$opt_user/g; s/_DOMAIN_/$opt_domain/g;" "${DIR}/webid-user-config-template" > $nginx_conf_available
-  ln -s  $nginx_conf_available $nginx_conf_enabled
+  
+  ln -s $nginx_conf_available $nginx_conf_enabled
 }
 
 function generate_certificate() {
@@ -231,8 +234,6 @@ preamble
 check_args
 
 set_webid
-
-set_nginx_config
 
 create_nginx_config
 
