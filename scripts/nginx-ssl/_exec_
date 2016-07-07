@@ -2,10 +2,9 @@
 
 trap 'error "${BASH_SOURCE}" "${LINENO}"' ERR
 
-while getopts "u:d:c:n:w:qh" opt; do
+while getopts "i:d:c:n:w:qh" opt; do
   case $opt in
-    u) opt_user=$OPTARG ;;
-    d) opt_domain=$OPTARG ;;
+    i) opt_webid=$OPTARG ;;
     c) opt_certbot=$OPTARG ;;
     l) opt_letsencryptconfpath=$OPTARG ;;
     n) opt_nginxconfpath=$OPTARG ;;
@@ -19,8 +18,6 @@ done
 preamble
 
 check_args
-
-set_webid
 
 create_nginx_config
 

@@ -52,43 +52,33 @@ function cleaning_exit() {
 
 function cleanup_nginx() {
  for f in sites-available sites-enabled; do
-  remove "${opt_nginxconfpath}/${f}/${webid}"
+  remove "${opt_nginxconfpath}/${f}/${opt_webid}"
  done
 }
 
 function cleanup_letsenrypt() {
  for f in live archive; do
-  remove "${opt_letsencryptconfpath}/${f}/${webid}"
+  remove "${opt_letsencryptconfpath}/${f}/${opt_webid}"
  done
- remove "${opt_letsencryptconfpath}/renewal/${webid}.conf"
+ remove "${opt_letsencryptconfpath}/renewal/${opt_webid}.conf"
 }
 
 
 function check_args() {
-  validate_user
-  validate_domain
+  validate_webid
   validate_certbot
   validate_nginxconfpath
   validate_webrootpath
 }
 
-function validate_user() {
-  opt_user=${opt_user,,} # ensure lowercase
-  if [ -z $opt_user ]; then
-    exit_usage "Username is missing"
-  elif [[ ! "$opt_user" =~ ^[0-9a-z]{3,10}$ ]]; then
-    exit_usage "Username must may only contain 3-10 alpha numeric lowercase characters"
-  fi
-}
-
-function validate_domain() {
-  opt_domain=${opt_domain,,} # ensure lowercase 
-  if [ -z $opt_domain ]; then
-    exit_usage "Domain is missing"
+function validate_webid() {
+  opt_webid=${opt_webid,,} # ensure lowercase 
+  if [ -z $opt_webid ]; then
+    exit_usage "WebId is missing"
   else
     # http://stackoverflow.com/a/32910760
-    if [[ -z `echo $opt_domain | grep -P '(?=^.{1,254}$)(^(?>(?!\d+\.)[a-zA-Z0-9_\-]{1,63}\.?)+(?:[a-zA-Z]{2,})$)'` ]]; then
-      exit_usage "Not a valid domain"
+    if [[ -z `echo $opt_webid | grep -P '(?=^.{1,254}$)(^(?>(?!\d+\.)[a-zA-Z0-9_\-]{1,63}\.?)+(?:[a-zA-Z]{2,})$)'` ]]; then
+      exit_usage "Not a WebId domain"
     fi
   fi
 }
@@ -116,14 +106,10 @@ function validate_nginxconfpath() {
 }
 
 
-function set_webid() {
-  webid="${opt_user}.webid.${opt_domain}"
-}
-
 function create_nginx_config() {
   mkdir $opt_nginxconfpath/sites-available 2>/dev/null
 
-  nginx_conf_available=$opt_nginxconfpath/sites-available/$webid
+  nginx_conf_available=$opt_nginxconfpath/sites-available/$opt_webid
 
   if [ -f $nginx_conf_available ]; then
     exit_error "Nginx config already exists ${nginx_conf_available}"
@@ -131,7 +117,7 @@ function create_nginx_config() {
 
   mkdir $opt_nginxconfpath/sites-enabled 2>/dev/null
 
-  nginx_conf_enabled=$opt_nginxconfpath/sites-enabled/${webid}
+  nginx_conf_enabled=$opt_nginxconfpath/sites-enabled/${opt_webid}
   
   if [ -f $nginx_conf_enabled ]; then
     exit_error "Nginx config already exists ${nginx_conf_enabled}"
@@ -143,7 +129,7 @@ function create_nginx_config() {
 }
 
 function generate_certificate() {
-  $opt_certbot certonly --webroot --webroot-path $opt_webrootpath -d $webid -q
+  $opt_certbot certonly --webroot --webroot-path $opt_webrootpath -d $opt_webid -q
 }
 
 function update_nginx_config() {
@@ -156,10 +142,8 @@ function reload_nginx() {
 
 function show_usage() {
   echo -e "\e[1mOPTIONS\e[0m" >&2
-  echo -e "  \e[1m-u\e[0m \e[4musername\e[0m" >&2 
-  echo -e "     the WebId username (e.g. markus)" >&2
-  echo -e "  \e[1m-d\e[0m \e[4mdomain\e[0m" >&2 
-  echo -e "     the WebId root domain (e.g. jolocom.de)" >&2
+  echo -e "  \e[1m-i\e[0m \e[4mwebid\e[0m" >&2 
+  echo -e "     the WebId url (e.g. markus.webid.jolocom.de)" >&2
   echo -e "  \e[1m-c\e[0m \e[4mcertbot\e[0m" >&2 
   echo -e "     the path to certbot executable (default: $certbot_default)" >&2
   echo -e "  \e[1m-l\e[0m \e[4mletsencryptconfpath\e[0m" >&2 

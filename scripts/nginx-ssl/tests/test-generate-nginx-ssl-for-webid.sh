@@ -3,8 +3,7 @@
 cur="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 tmp=`mktemp -d`
 
-user=Markus
-domain=jolocom.de
+webid=Markus.webid.jolocom.de
 nginxconf=$tmp/nginx
 webroot=$tmp/webroot
 
@@ -29,13 +28,13 @@ function setdown() {
 }
 
 function test_result() {
-  if [ $any_failures == false ]; then
+  if [ $any_failures = false ]; then
     echo -e "\e[1m[SUCCESS]\e[0m"
   fi
 }
 
 function test_failed() {
-  $any_failures=true
+  any_failures=true
   echo -e "\e[91m\e[1m[FAILED] ${1} \e[0m"
 }
 
@@ -62,7 +61,7 @@ function validate_nginx_conf_files() {
 
 setup
 
-bash $cur/generate-nginx-ssl-for-webid-stubbed.sh -u $user -d $domain -n $nginxconf -w $webroot -q
+bash $cur/generate-nginx-ssl-for-webid-stubbed.sh -i $webid -n $nginxconf -w $webroot -q
 
 validate_nginx_conf_files
 
