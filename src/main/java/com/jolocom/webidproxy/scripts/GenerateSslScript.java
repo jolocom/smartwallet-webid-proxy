@@ -20,11 +20,12 @@ public class GenerateSslScript {
 
 	public static void execute(String username) throws IOException, InterruptedException {
 
-		final String webid = (username + "." + (Config.webidHost().indexOf(':') > 0) ? Config.webidHost().substring(0,  Config.webidHost().indexOf(':')) : Config.webidHost());
+		final String domain = (Config.webidHost().indexOf(':') > 0) ? Config.webidHost().substring(0,  Config.webidHost().indexOf(':')) : Config.webidHost();
 
 		StringBuffer line = new StringBuffer();
 		line.append(SCRIPT_PATH);
-		line.append(" -i " + webid);
+		line.append(" -u " + username);
+		line.append(" -d " + domain);
 		line.append(" -c " + CERTBOT_PATH);
 		line.append(" -w " + WEBROOT_PATH);
 		line.append(" -q");
