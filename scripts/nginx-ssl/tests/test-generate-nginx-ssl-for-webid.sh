@@ -62,7 +62,7 @@ function validate_nginx_conf_files() {
 
 setup
 
-bash $cur/generate-stubbed.sh -u $user -d $domain -n $nginxconf -w $webroot -q
+bash $cur/generate-nginx-ssl-for-webid-stubbed.sh -u $user -d $domain -n $nginxconf -w $webroot -q
 
 validate_nginx_conf_files
 

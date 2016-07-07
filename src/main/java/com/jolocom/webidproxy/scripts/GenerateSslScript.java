@@ -14,7 +14,7 @@ public class GenerateSslScript {
 
 	private static final Log log = LogFactory.getLog(GenerateSslScript.class);
 
-	public static final String SCRIPT_PATH = "./scripts/nginx-ssl/generate-ssl-for-webid.sh";
+	public static final String SCRIPT_PATH = "./scripts/nginx-ssl/generate-nginx-ssl-for-webid.sh";
 	public static final String CERTBOT_PATH = "/root/certbot-auto";
 	public static final String WEBROOT_PATH = "/usr/share/nginx/html";
 
