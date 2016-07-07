@@ -4,18 +4,19 @@
 ### HELPERS ###
 ###############
 function preamble() {
-  echo -ne "\e[91m"
-  echo "THERE IS NO WARRANTY FOR THIS PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW."
-  echo "EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER"
-  echo "PARTIES PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY OF ANY KIND, EITHER"
-  echo "EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF"
-  echo "MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE"
-  echo "QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE"
-  echo "DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION."
-  echo "PROVIDING THE WRONG PARAMTERS MAY BE HARMFUL TO YOUR SYSTEM. BE CAREFUL!"
-  echo -e "\e[39m"
-
   if [ $opt_quiet = false ]; then
+
+    echo -ne "\e[91m"
+    echo "THERE IS NO WARRANTY FOR THIS PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW."
+    echo "EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER"
+    echo "PARTIES PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY OF ANY KIND, EITHER"
+    echo "EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF"
+    echo "MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE"
+    echo "QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE"
+    echo "DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION."
+    echo "PROVIDING THE WRONG PARAMTERS MAY BE HARMFUL TO YOUR SYSTEM. BE CAREFUL!"
+    echo -e "\e[39m"
+
     echo -n "Continue? (yes/no) "
     read confirm && echo
 
@@ -44,6 +45,7 @@ function error() {
 }
 
 function cleaning_exit() {
+  echo "Rollback! Removing created files."
   cleanup_nginx
   cleanup_letsenrypt
 }
@@ -129,7 +131,7 @@ function create_nginx_config() {
 
   mkdir $opt_nginxconfpath/sites-enabled 2>/dev/null
 
-  nginx_conf_enabled=$opt_nginxconfpath/sites-enabled/$webid
+  nginx_conf_enabled=$opt_nginxconfpath/sites-enabled/${webid}
   
   if [ -f $nginx_conf_enabled ]; then
     exit_error "Nginx config already exists ${nginx_conf_enabled}"
@@ -209,38 +211,3 @@ opt_nginxconfpath=$nginxconfpath_default
 opt_letsencryptconfpath=$letsencryptconfpath_default
 opt_quiet=false
 
-##############
-### SCRIPT ###
-##############
-
-trap 'error "${BASH_SOURCE}" "${LINENO}"' ERR
-
-while getopts "u:d:c:n:w:qh" opt; do
-  case $opt in
-    u) opt_user=$OPTARG ;;
-    d) opt_domain=$OPTARG ;;
-    c) opt_certbot=$OPTARG ;;
-    l) opt_letsencryptconfpath=$OPTARG ;;
-    n) opt_nginxconfpath=$OPTARG ;;
-    w) opt_webrootpath=$OPTARG ;;
-    q) opt_quiet=true ;;
-    h) exit_usage ;;
-    \?) exit_usage ;;
-  esac
-done
-
-preamble
-
-check_args
-
-set_webid
-
-create_nginx_config
-
-reload_nginx
-
-generate_certificate
-
-update_nginx_config
-
-reload_nginx
