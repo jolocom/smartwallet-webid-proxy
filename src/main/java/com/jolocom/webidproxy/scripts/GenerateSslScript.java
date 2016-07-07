@@ -24,8 +24,7 @@ public class GenerateSslScript {
 
 		StringBuffer line = new StringBuffer();
 		line.append(SCRIPT_PATH);
-		line.append(" -u " + username);
-		line.append(" -d " + domain);
+		line.append(" -i " + username + "." + domain);
 		line.append(" -c " + CERTBOT_PATH);
 		line.append(" -w " + WEBROOT_PATH);
 		line.append(" -q");
