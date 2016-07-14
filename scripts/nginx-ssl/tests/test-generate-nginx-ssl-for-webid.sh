@@ -49,6 +49,11 @@ function validate_nginx_conf_files() {
     test_failed "File ${f} is missing"
   fi
 
+  if ! grep -q 'server_name markus.webid.jolocom.de' $f; then
+    test_failed "File ${f} does not contain expected 'server_name markus.webid.jolocom.de'"
+  fi
+    
+
   l="${nginxconf}/sites-enabled/markus.webid.jolocom.de"
   if [ ! -h $l ]; then
     test_failed "Symbolic link ${l} is missing"

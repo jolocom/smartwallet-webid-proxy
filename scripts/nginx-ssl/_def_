@@ -123,7 +123,7 @@ function create_nginx_config() {
     exit_error "Nginx config already exists ${nginx_conf_enabled}"
   fi
   
-  sed -e "s/_USER_/$opt_user/g; s/_DOMAIN_/$opt_domain/g;" "${DIR}/webid-user-config-template" > $nginx_conf_available
+  sed -e "s/_WEBID_/$opt_webid/g;" "${DIR}/webid-user-config-template" > $nginx_conf_available
   
   ln -s $nginx_conf_available $nginx_conf_enabled
 }
@@ -133,7 +133,7 @@ function generate_certificate() {
 }
 
 function update_nginx_config() {
-  sed -e "s/_USER_/$opt_user/g; s/_DOMAIN_/$opt_domain/g;" "${DIR}/webid-user-ssl-config-template" > $nginx_conf_available
+  sed -e "s/_WEBID_/$opt_webid/g;" "${DIR}/webid-user-ssl-config-template" > $nginx_conf_available
 }
 
 function reload_nginx() {

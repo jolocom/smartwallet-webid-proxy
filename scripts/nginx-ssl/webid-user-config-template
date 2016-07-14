@@ -1,4 +1,4 @@
 server {
   listen 80;
-  server_name _USER_.webid._DOMAIN_;
+  server_name _WEBID_;
 }

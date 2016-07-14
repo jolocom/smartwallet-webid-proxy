@@ -1,20 +1,20 @@
 server {
-  server_name _USER_.webid._DOMAIN_;
+  server_name _WEBID_;
   listen *:443 ssl;
 
-  ssl_certificate /etc/letsencrypt/live/_USER_.webid._DOMAIN_/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/_USER_.webid._DOMAIN_/privkey.pem;
+  ssl_certificate /etc/letsencrypt/live/_WEBID_/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/_WEBID_/privkey.pem;
   # SSLv3 is insecure http://disablessl3.com/
   ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 
-  access_log /var/log/nginx/_USER_.webid.jolocom.access.log;
-  error_log /var/log/nginx/_USER_.webid.jolocom.error.log;
+  access_log /var/log/nginx/_WEBID_.access.log;
+  error_log /var/log/nginx/_WEBID_.error.log;
 
   include /etc/nginx/webid-proxy-config-template;
 }
 
 server {
   listen 80;
-  server_name _USER_.webid._DOMAIN_;
-  return 301 https://_USER_.webid._DOMAIN_$request_uri;
+  server_name _WEBID_;
+  return 301 https://_WEBID_$request_uri;
 }
