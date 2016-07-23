@@ -62,11 +62,14 @@ function post() {
 	$.ajax({
       url:target,
       type:"POST",
+      data:content,
       headers: { 
         "Accept" : "text/turtle; charset=utf-8",
         "Content-Type": "text/turtle; charset=utf-8"
       },
-      data:content
+      xhrFields: {
+        withCredentials: true
+      }
     })  
 	.done(function(data) {
 		alert("success: " + data);
@@ -84,11 +87,14 @@ function put() {
 	$.ajax({
       url:target,
       type:"PUT",
+      data:content,
       headers: { 
         "Accept" : "text/turtle; charset=utf-8",
         "Content-Type": "text/turtle; charset=utf-8"
       },
-      data:content
+      xhrFields: {
+        withCredentials: true
+      }
     })  
 	.done(function(data) {
 		alert("success: " + data);
@@ -104,8 +110,11 @@ function delet() {
 
 	$.ajax({
       url:target,
-      type:"DELETE"
-    })  
+      type:"DELETE",
+      xhrFields: {
+        withCredentials: true
+      }
+    })
 	.done(function(data) {
 		alert("success: " + data);
 	})
