@@ -19,8 +19,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.jolocom.webidproxy.scripts.GenerateSslScript;
-
 public class UsersFileImpl implements Users {
 
 	private static final Log log = LogFactory.getLog(UsersFileImpl.class);
@@ -67,17 +65,6 @@ public class UsersFileImpl implements Users {
 
 			delete(user);
 			throw new RuntimeException("Cannot register WebID: " + ex.getMessage(), ex);
-		}
-
-		// run NGINX SSL script
-
-		try {
-
-			GenerateSslScript.execute(username);
-		} catch (Exception ex) {
-
-			delete(user);
-			throw new RuntimeException("Cannot set up Let's Encrypt: " + ex.getMessage(), ex);
 		}
 
 		// done
