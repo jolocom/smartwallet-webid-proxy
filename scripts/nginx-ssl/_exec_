@@ -1,0 +1,30 @@
+#/bin/bash
+
+trap 'error "${BASH_SOURCE}" "${LINENO}"' ERR
+
+while getopts "i:d:c:n:w:qh" opt; do
+  case $opt in
+    i) opt_webid=$OPTARG ;;
+    c) opt_certbot=$OPTARG ;;
+    l) opt_letsencryptconfpath=$OPTARG ;;
+    n) opt_nginxconfpath=$OPTARG ;;
+    w) opt_webrootpath=$OPTARG ;;
+    q) opt_quiet=true ;;
+    h) exit_usage ;;
+    \?) exit_usage ;;
+  esac
+done
+
+preamble
+
+check_args
+
+create_nginx_config
+
+reload_nginx
+
+generate_certificate
+
+update_nginx_config
+
+reload_nginx

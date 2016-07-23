@@ -1,0 +1,9 @@
+curl -c cookie -v --data "username=testuser1&password=secret" http://localhost:8111/login
+curl -b cookie "http://localhost:8111/proxy/?url=https://testuser1.mywebid.com:8443/profile/card"
+
+curl -c cookie -v --data "username=testuser1&password=secret" http://localhost:8111/login
+curl -b cookie "http://localhost:8111/proxy/?url=https://testuser1.mywebid.com:8443/profile/card"
+
+curl -c cookie -v --data "username=work&password=work" https://proxy.webid.jolocom.de/login
+curl -b cookie "https://proxy.webid.jolocom.de/proxy/?url=https://work.webid.jolocom.de/profile/card"
+

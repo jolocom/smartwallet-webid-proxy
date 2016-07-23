@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,8 +40,9 @@ public class LoginServlet extends NonProxyServlet {
 			return;
 		}
 
-		request.getSession().setAttribute("username", username);
-		request.getSession().setAttribute("HTTPCLIENT", null);
+		HttpSession session = request.getSession(true);
+		session.setAttribute("username", username);
+		session.setAttribute("HTTPCLIENT", null);
 		log.debug("User " + username + " successfully logged in.");
 
 		String content = "{\"webid\":\"" + user.getWebid() + "\"}";
