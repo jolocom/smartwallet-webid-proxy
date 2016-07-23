@@ -172,7 +172,14 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		log.info("PROXY OPTIONS " + target);
 
-		response.setHeader("Access-Control-Allow-Origin", "*");
+		if (request.getHeader("Origin") != null) {
+
+			response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+		} else {
+
+			response.setHeader("Access-Control-Allow-Origin", "*");
+		}
+
 		response.setHeader("Access-Control-Allow-Credentials", "true");
 		response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Cache-Control, Expires, X-Cache, X-HTTP-Method-Override, Accept");
 		response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, PATCH, DELETE, TRACE, OPTIONS");
