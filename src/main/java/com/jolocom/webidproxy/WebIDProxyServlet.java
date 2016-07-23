@@ -169,8 +169,6 @@ public class WebIDProxyServlet extends HttpServlet {
 		super.doOptions(request, response);
 
 		String target = request.getParameter("url");
-		User user = loadUser(request);
-		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
 		log.info("PROXY OPTIONS " + target);
 
