@@ -31,6 +31,8 @@ import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
 
 public class SSLGenerator {
 
+	public static final String CHALLENGE_STRING = "";
+	
 	static {
 
 		Security.addProvider(new BouncyCastleProvider());
@@ -52,7 +54,7 @@ public class SSLGenerator {
 
 	public static SignedPublicKeyAndChallenge generateSignedPublicKeyAndChallenge(KeyPair keyPair) throws GeneralSecurityException {
 
-		String challengeString = "challenge";
+		String challengeString = CHALLENGE_STRING;
 
 		PublicKeyAndChallenge publicKeyAndChallenge = makePublicKeyAndChallenge(keyPair.getPublic(), challengeString);
 		SignedPublicKeyAndChallenge signedPublicKeyAndChallenge = makeSignedPublicKeyAndChallenge(publicKeyAndChallenge, keyPair.getPrivate());
@@ -68,7 +70,7 @@ public class SSLGenerator {
 	private static PublicKeyAndChallenge makePublicKeyAndChallenge(PublicKey publicKey, String challengeString) {
 
 		SubjectPublicKeyInfo spki = makeSubjectPublicKeyInfo(publicKey);
-		DERIA5String challenge = new DERIA5String(challengeString);
+		DERIA5String challenge = challengeString == null ? null : new DERIA5String(challengeString);
 
 		ASN1Encodable[] objects = new ASN1Encodable[2];
 		objects[0] = spki;
@@ -91,7 +93,7 @@ public class SSLGenerator {
 		ASN1Encodable[] objects = new ASN1Encodable[3];
 		objects[0] = publicKeyAndChallenge;
 		objects[1] = signatureAlgorithm;
-		objects[2] = new DERBitString(signature);
+		objects[2] = signature;
 
 		return new SignedPublicKeyAndChallenge(new DERSequence(objects).getDEREncoded());
 	}

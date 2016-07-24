@@ -58,7 +58,7 @@ public class User {
 			SignedPublicKeyAndChallenge signedPublicKeyAndChallenge = SSLGenerator.generateSignedPublicKeyAndChallenge(keyPair);
 			X509Certificate cert = SSLGenerator.generateCertificate("CN=" + "WebID" + ", O=WebID, ST=Some-State, C=US", this.webid, keyPair, certDays, "X509");
 
-			this.spkac = "SPKAC=" + Base64.encodeBase64String(signedPublicKeyAndChallenge.getEncoded());
+			this.spkac = Base64.encodeBase64String(signedPublicKeyAndChallenge.getEncoded());
 			this.privatekey = Base64.encodeBase64String(keyPair.getPrivate().getEncoded());
 			this.certificate = Base64.encodeBase64String(cert.getEncoded());
 		} catch (Exception ex) {
