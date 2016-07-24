@@ -73,6 +73,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		response.setStatus(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase());
 		for (Header header : httpResponse.getAllHeaders()) response.addHeader(header.getName(), header.getValue());
+		response.setHeader("Access-Control-Expose-Headers", "Link");
 		IOUtils.copy(entity.getContent(), response.getOutputStream());
 		EntityUtils.consume(entity);
 	}
@@ -95,6 +96,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		response.setStatus(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase());
 		for (Header header : httpResponse.getAllHeaders()) response.addHeader(header.getName(), header.getValue());
+		response.setHeader("Access-Control-Expose-Headers", "Link");
 		IOUtils.copy(entity.getContent(), response.getOutputStream());
 		EntityUtils.consume(entity);
 	}
@@ -117,6 +119,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		response.setStatus(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase());
 		for (Header header : httpResponse.getAllHeaders()) response.addHeader(header.getName(), header.getValue());
+		response.setHeader("Access-Control-Expose-Headers", "Link");
 		IOUtils.copy(entity.getContent(), response.getOutputStream());
 		EntityUtils.consume(entity);
 	}
@@ -138,6 +141,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		response.setStatus(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase());
 		for (Header header : httpResponse.getAllHeaders()) response.addHeader(header.getName(), header.getValue());
+		response.setHeader("Access-Control-Expose-Headers", "Link");
 		IOUtils.copy(entity.getContent(), response.getOutputStream());
 		EntityUtils.consume(entity);
 	}
@@ -159,6 +163,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		response.setStatus(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase());
 		for (Header header : httpResponse.getAllHeaders()) response.addHeader(header.getName(), header.getValue());
+		response.setHeader("Access-Control-Expose-Headers", "Link");
 		IOUtils.copy(entity.getContent(), response.getOutputStream());
 		EntityUtils.consume(entity);
 	}
@@ -181,8 +186,9 @@ public class WebIDProxyServlet extends HttpServlet {
 		}
 
 		response.setHeader("Access-Control-Allow-Credentials", "true");
-		response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Cache-Control, Expires, X-Cache, X-HTTP-Method-Override, Accept");
+		response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Link, Content-Type, Cache-Control, Expires, X-Cache, X-HTTP-Method-Override, Accept");
 		response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, PATCH, DELETE, TRACE, OPTIONS");
+		response.setHeader("Access-Control-Expose-Headers", "Link");
 	}
 
 	private static User loadUser(HttpServletRequest request) {
