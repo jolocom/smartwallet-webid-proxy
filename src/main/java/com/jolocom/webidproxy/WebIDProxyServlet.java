@@ -1,6 +1,9 @@
 package com.jolocom.webidproxy;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -35,6 +38,28 @@ public class WebIDProxyServlet extends HttpServlet {
 	private static final Log log = LogFactory.getLog(WebIDProxyServlet.class);
 
 	public static final String[] COPY_HEADERS = new String[] { "Accept", "Content-Type", "Origin" };
+	public static final Map<String, String> GET_HEADERS;
+	public static final Map<String, String> PUT_HEADERS;
+	public static final Map<String, String> POST_HEADERS;
+	public static final Map<String, String> PATCH_HEADERS;
+	public static final Map<String, String> DELETE_HEADERS;
+	public static final Map<String, String> OPTIONS_HEADERS;
+
+	static {
+
+		GET_HEADERS = new HashMap<String, String> ();
+		PUT_HEADERS = new HashMap<String, String> ();
+		POST_HEADERS = new HashMap<String, String> ();
+		PATCH_HEADERS = new HashMap<String, String> ();
+		DELETE_HEADERS = new HashMap<String, String> ();
+		OPTIONS_HEADERS = new HashMap<String, String> ();
+
+		GET_HEADERS.put("Access-Control-Expose-Headers", "Content-Type");
+		OPTIONS_HEADERS.put("Access-Control-Allow-Credentials", "true");
+		OPTIONS_HEADERS.put("Access-Control-Allow-Headers", "Origin, X-Requested-With, Link, Content-Type, Cache-Control, Expires, X-Cache, X-HTTP-Method-Override, Accept");
+		OPTIONS_HEADERS.put("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, PATCH, DELETE, TRACE, OPTIONS");
+		OPTIONS_HEADERS.put("Access-Control-Expose-Headers", "Link");
+	}
 
 	public static Users users = null;
 
@@ -73,7 +98,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		response.setStatus(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase());
 		for (Header header : httpResponse.getAllHeaders()) response.addHeader(header.getName(), header.getValue());
-		response.setHeader("Access-Control-Expose-Headers", "Link");
+		for (Entry<String, String> header : GET_HEADERS.entrySet()) response.addHeader(header.getKey(), header.getValue());
 		IOUtils.copy(entity.getContent(), response.getOutputStream());
 		EntityUtils.consume(entity);
 	}
@@ -96,7 +121,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		response.setStatus(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase());
 		for (Header header : httpResponse.getAllHeaders()) response.addHeader(header.getName(), header.getValue());
-		response.setHeader("Access-Control-Expose-Headers", "Link");
+		for (Entry<String, String> header : PUT_HEADERS.entrySet()) response.addHeader(header.getKey(), header.getValue());
 		IOUtils.copy(entity.getContent(), response.getOutputStream());
 		EntityUtils.consume(entity);
 	}
@@ -119,7 +144,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		response.setStatus(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase());
 		for (Header header : httpResponse.getAllHeaders()) response.addHeader(header.getName(), header.getValue());
-		response.setHeader("Access-Control-Expose-Headers", "Link");
+		for (Entry<String, String> header : POST_HEADERS.entrySet()) response.addHeader(header.getKey(), header.getValue());
 		IOUtils.copy(entity.getContent(), response.getOutputStream());
 		EntityUtils.consume(entity);
 	}
@@ -141,7 +166,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		response.setStatus(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase());
 		for (Header header : httpResponse.getAllHeaders()) response.addHeader(header.getName(), header.getValue());
-		response.setHeader("Access-Control-Expose-Headers", "Link");
+		for (Entry<String, String> header : PATCH_HEADERS.entrySet()) response.addHeader(header.getKey(), header.getValue());
 		IOUtils.copy(entity.getContent(), response.getOutputStream());
 		EntityUtils.consume(entity);
 	}
@@ -163,7 +188,7 @@ public class WebIDProxyServlet extends HttpServlet {
 
 		response.setStatus(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine().getReasonPhrase());
 		for (Header header : httpResponse.getAllHeaders()) response.addHeader(header.getName(), header.getValue());
-		response.setHeader("Access-Control-Expose-Headers", "Link");
+		for (Entry<String, String> header : DELETE_HEADERS.entrySet()) response.addHeader(header.getKey(), header.getValue());
 		IOUtils.copy(entity.getContent(), response.getOutputStream());
 		EntityUtils.consume(entity);
 	}
@@ -185,10 +210,7 @@ public class WebIDProxyServlet extends HttpServlet {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 		}
 
-		response.setHeader("Access-Control-Allow-Credentials", "true");
-		response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Link, Content-Type, Cache-Control, Expires, X-Cache, X-HTTP-Method-Override, Accept");
-		response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, PATCH, DELETE, TRACE, OPTIONS");
-		response.setHeader("Access-Control-Expose-Headers", "Link");
+		for (Entry<String, String> header : OPTIONS_HEADERS.entrySet()) response.addHeader(header.getKey(), header.getValue());
 	}
 
 	private static User loadUser(HttpServletRequest request) {
