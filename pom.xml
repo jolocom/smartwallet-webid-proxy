@@ -135,6 +135,12 @@
 			<version>1.46</version>
 			<scope>compile</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.mindrot/jbcrypt -->
+		<dependency>
+			<groupId>org.mindrot</groupId>
+			<artifactId>jbcrypt</artifactId>
+			<version>0.3m</version>
+		</dependency>
 
 	</dependencies>
 
