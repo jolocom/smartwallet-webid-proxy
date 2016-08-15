@@ -27,7 +27,6 @@ public class WebIDRegistration {
 
 		List<NameValuePair> accountParameterMap = new ArrayList<NameValuePair> ();
 		accountParameterMap.add(new BasicNameValuePair("username", user.getUsername()));
-		accountParameterMap.add(new BasicNameValuePair("password", user.getPassword()));
 		accountParameterMap.add(new BasicNameValuePair("spkac", user.getSpkac()));
 		accountParameterMap.add(new BasicNameValuePair("webid", webid));
 		accountParameterMap.add(new BasicNameValuePair("host", host));
