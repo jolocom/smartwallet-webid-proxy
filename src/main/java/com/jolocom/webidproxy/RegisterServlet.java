@@ -12,6 +12,8 @@ import org.apache.commons.logging.LogFactory;
 import com.jolocom.webidproxy.users.User;
 import com.jolocom.webidproxy.util.Util;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 public class RegisterServlet extends NonProxyServlet {
 
 	private static final long serialVersionUID = 3793048689633131588L;
@@ -48,7 +50,7 @@ public class RegisterServlet extends NonProxyServlet {
 			throw new RuntimeException(ex.getMessage(), ex)
 		}*/
 
-		User user = WebIDProxyServlet.users.register(username, password, name, email);
+		User user = WebIDProxyServlet.users.register(username, BCrypt.hashpw(password,BCrypt.gensalt()), name, email);
 		request.getSession().setAttribute("username", username);
 		request.getSession().setAttribute("HTTPCLIENT", null);
 		log.debug("User " + username + " successfully registered and logged in.");

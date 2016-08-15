@@ -13,6 +13,8 @@ import org.apache.commons.logging.LogFactory;
 import com.jolocom.webidproxy.users.User;
 import com.jolocom.webidproxy.util.Util;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 public class LoginServlet extends NonProxyServlet {
 
 	private static final long serialVersionUID = 3793048689633131588L;
@@ -33,7 +35,7 @@ public class LoginServlet extends NonProxyServlet {
 
 		User user = WebIDProxyServlet.users.get(username);
 
-		if (user == null || ! password.equals(user.getPassword())) {
+		if (user == null || ! BCrypt.checkpw(password, user.getPassword())) {
 
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User " + username + " cannot be authenticated.");
 			log.debug("User " + username + " cannot be authenticated.");
