@@ -41,6 +41,16 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>ExportKeyServlet</servlet-name>
+		<servlet-class>com.jolocom.webidproxy.ExportKeyServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ExportKeyServlet</servlet-name>
+		<url-pattern>/exportkey</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>WebIDProxyServlet</servlet-name>
 		<servlet-class>com.jolocom.webidproxy.WebIDProxyServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>

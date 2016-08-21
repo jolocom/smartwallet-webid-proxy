@@ -65,6 +65,10 @@ Logout:
 
 	POST: http://localhost:8111/logout 
 
+Export Private Key:
+
+	REDIRECT: http://localhost:8111/exportkey
+
 Users are stored in **./users/** and also created on the SoLiD server.
 
 For each user, there is a key/value text file and a PKCS#12 key store.

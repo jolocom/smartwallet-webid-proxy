@@ -218,7 +218,7 @@ public class WebIDProxyServlet extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		String username = session == null ? null : (String) session.getAttribute("username");
 		log.debug("Username: " + username);
-		User user = username == null ? null : users.get(username);
+		User user = username == null ? null : WebIDProxyServlet.users.get(username);
 		log.debug("User: " + user);
 
 		return user;

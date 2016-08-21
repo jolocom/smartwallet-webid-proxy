@@ -54,6 +54,13 @@ function logout() {
 	});
 }
 
+function exportkey() {
+
+	var target = $("#exportkeytarget").val();
+	
+	window.location.href = target;
+}
+
 function post() {
 
 	var target = $("#target").val();
@@ -155,6 +162,9 @@ function get() {
 <hr>
 <p><button onclick="logout();">logout:</button><br>
 <input id="logouttarget" type="text" size="40" value="http://localhost:8111/logout"></p>
+<hr>
+<p><button onclick="exportkey();">export key:</button><br>
+<input id="exportkeytarget" type="text" size="40" value="http://localhost:8111/exportkey"></p>
 <hr>
 <p><button onclick="post();">http post:</button> <button onclick="put();">http put:</button>
 <button onclick="get();">http get:</button> <button onclick="delet();">http delete:</button>
