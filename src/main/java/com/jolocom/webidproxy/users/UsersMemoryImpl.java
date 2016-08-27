@@ -30,7 +30,7 @@ public class UsersMemoryImpl implements Users {
 		}
 
 		this.users.put(username, user);
-		
+
 		return user;
 	}
 
@@ -38,5 +38,10 @@ public class UsersMemoryImpl implements Users {
 	public User get(String username) {
 
 		return this.users.get(username);
+	}
+
+	public void put(User user) {
+
+		this.users.put(user.getUsername(), user);
 	}
 }

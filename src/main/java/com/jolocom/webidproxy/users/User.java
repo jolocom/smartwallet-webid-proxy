@@ -1,6 +1,5 @@
 package com.jolocom.webidproxy.users;
 
-import java.io.ByteArrayOutputStream;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Properties;
@@ -24,8 +23,9 @@ public class User {
 	public String spkac;
 	public String privatekey;
 	public String certificate;
+	public String recoverycode;
 
-	User(String username, String password, String name, String email, String webid, String spkac, String privatekey, String certificate) {
+	User(String username, String password, String name, String email, String webid, String spkac, String privatekey, String certificate, String recoverycode) {
 
 		this.username = username;
 		this.password = password;
@@ -35,6 +35,7 @@ public class User {
 		this.spkac = spkac;
 		this.privatekey = privatekey;
 		this.certificate = certificate;
+		this.recoverycode = recoverycode;
 	}
 
 	User(String username, String password, String name, String email) {
@@ -65,6 +66,8 @@ public class User {
 
 			throw new RuntimeException(ex.getMessage(), ex);
 		}
+		
+		this.recoverycode = null;
 	}
 
 	static User fromProperties(Properties properties) {
@@ -77,7 +80,8 @@ public class User {
 				properties.getProperty("webid"),
 				properties.getProperty("spkac"),
 				properties.getProperty("privatekey"),
-				properties.getProperty("certificate"));
+				properties.getProperty("certificate"),
+				properties.getProperty("recoverycode"));
 	}
 
 	static Properties toProperties(User user) {
@@ -91,6 +95,7 @@ public class User {
 		if (user.getSpkac() != null) properties.setProperty("spkac", user.getSpkac());
 		if (user.getPrivatekey() != null) properties.setProperty("privatekey", user.getPrivatekey());
 		if (user.getCertificate() != null) properties.setProperty("certificate", user.getCertificate());
+		if (user.getRecoverycode() != null) properties.setProperty("recoverycode", user.getRecoverycode());
 
 		return properties;
 	}
@@ -157,6 +162,14 @@ public class User {
 
 	public void setCertificate(String certificate) {
 		this.certificate = certificate;
+	}
+
+	public String getRecoverycode() {
+		return recoverycode;
+	}
+
+	public void setRecoverycode(String recoverycode) {
+		this.recoverycode = recoverycode;
 	}
 
 	@Override

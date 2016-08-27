@@ -1,0 +1,48 @@
+package com.jolocom.webidproxy;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.jolocom.webidproxy.users.User;
+
+public class ExportKeyServlet extends NonProxyServlet {
+
+	private static final long serialVersionUID = 1540763620371741373L;
+
+	private static final Log log = LogFactory.getLog(ExportKeyServlet.class);
+
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		User user = loadUser(request);
+		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
+
+		File keyfile = user == null ? null : new File("./users/" + user.getUsername() + ".p12");
+
+		response.setHeader("Content-Type", "application/x-pkcs12");
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + user.getUsername() + ".p12\"");
+		IOUtils.copy(new FileInputStream(keyfile), response.getOutputStream());
+		log.debug("Private key of user " + user.getUsername() + " successfully exported.");
+	}
+
+	private static User loadUser(HttpServletRequest request) {
+
+		HttpSession session = request.getSession(false);
+		String username = session == null ? null : (String) session.getAttribute("username");
+		log.debug("Username: " + username);
+		User user = username == null ? null : WebIDProxyServlet.users.get(username);
+		log.debug("User: " + user);
+
+		return user;
+	}
+}

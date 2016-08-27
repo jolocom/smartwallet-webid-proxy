@@ -41,6 +41,26 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>ForgotPasswordServlet</servlet-name>
+		<servlet-class>com.jolocom.webidproxy.ForgotPasswordServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ForgotPasswordServlet</servlet-name>
+		<url-pattern>/forgotpassword</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ResetPasswordServlet</servlet-name>
+		<servlet-class>com.jolocom.webidproxy.ResetPasswordServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ResetPasswordServlet</servlet-name>
+		<url-pattern>/resetpassword</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>ExportKeyServlet</servlet-name>
 		<servlet-class>com.jolocom.webidproxy.ExportKeyServlet</servlet-class>
 	</servlet>

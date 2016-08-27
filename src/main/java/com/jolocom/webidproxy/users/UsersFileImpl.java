@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.KeyFactory;
 import java.security.KeyStore;
@@ -49,10 +50,11 @@ public class UsersFileImpl implements Users {
 
 		try {
 
-			save(user);
+			saveUser(user);
+			saveKey(user);
 		} catch (Exception ex) {
 
-			delete(user);
+			deleteUserAndKey(user);
 			throw new RuntimeException("Cannot register user: " + ex.getMessage(), ex);
 		}
 
@@ -63,7 +65,7 @@ public class UsersFileImpl implements Users {
 			WebIDRegistration.registerWebIDAccount(user);
 		} catch (Exception ex) {
 
-			delete(user);
+			deleteUserAndKey(user);
 			throw new RuntimeException("Cannot register WebID: " + ex.getMessage(), ex);
 		}
 
@@ -77,14 +79,26 @@ public class UsersFileImpl implements Users {
 
 		try {
 
-			return load(username);
+			return loadUser(username);
 		} catch (Exception ex) {
 
 			throw new RuntimeException(ex.getMessage(), ex);
 		}
 	}
 
-	private static User load(String username) throws Exception {
+	@Override
+	public void put(User user) {
+
+		try {
+
+			saveUser(user);
+		} catch (Exception ex) {
+
+			throw new RuntimeException(ex.getMessage(), ex);
+		}
+	}
+
+	public User loadUser(String username) throws Exception {
 
 		if (! DIR.exists()) return null;
 
@@ -103,7 +117,7 @@ public class UsersFileImpl implements Users {
 		return user;
 	}
 
-	private static void save(User user) throws Exception {
+	public static void saveUser(User user) throws IOException {
 
 		if (! DIR.exists()) DIR.mkdir();
 
@@ -113,6 +127,15 @@ public class UsersFileImpl implements Users {
 		Properties properties = User.toProperties(user);
 		properties.store(writer, user.getUsername());
 		writer.close();
+
+		// done
+
+		log.debug("Saved user " + user);
+	}
+
+	public static void saveKey(User user) throws Exception {
+
+		if (! DIR.exists()) DIR.mkdir();
 
 		// key store
 
@@ -135,10 +158,10 @@ public class UsersFileImpl implements Users {
 
 		// done
 
-		log.debug("Saved user " + user);
+		log.debug("Saved key " + user);
 	}
 
-	private static void delete(User user) {
+	private static void deleteUserAndKey(User user) {
 
 		File file = new File(DIR, user.getUsername());
 		File ksfile = new File(DIR, user.getUsername() + ".p12");

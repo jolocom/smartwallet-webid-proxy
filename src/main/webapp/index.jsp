@@ -54,6 +54,38 @@ function logout() {
 	});
 }
 
+function forgotpassword() {
+
+	var forgotpasswordtarget = $("#forgotpasswordtarget").val();
+
+	var username = $("#forgotpasswordusername").val();
+
+	$.post(forgotpasswordtarget, {"username":username})
+	.done(function() {
+		alert("success!");
+	})
+	.fail(function(err) {
+		alert("error: " + JSON.stringify(err));
+	});
+}
+
+function resetpassword() {
+
+	var resetpasswordtarget = $("#resetpasswordtarget").val();
+
+	var username = $("#resetpasswordusername").val();
+	var code = $("#resetpasswordcode").val();
+	var password = $("#resetpasswordpassword").val();
+
+	$.post(resetpasswordtarget, {"username":username,"code":code,"password":password})
+	.done(function() {
+		alert("success!");
+	})
+	.fail(function(err) {
+		alert("error: " + JSON.stringify(err));
+	});
+}
+
 function exportkey() {
 
 	var target = $("#exportkeytarget").val();
@@ -162,6 +194,16 @@ function get() {
 <hr>
 <p><button onclick="logout();">logout:</button><br>
 <input id="logouttarget" type="text" size="40" value="http://localhost:8111/logout"></p>
+<hr>
+<p><button onclick="forgotpassword();">forgot password:</button>
+<input id="forgotpasswordusername" type="text" size="20" value="testuser1">
+<input id="forgotpasswordtarget" type="text" size="40" value="http://localhost:8111/forgotpassword"></p>
+<hr>
+<p><button onclick="resetpassword();">reset password:</button>
+<input id="resetpasswordusername" type="text" size="20" value="testuser1">
+<input id="resetpasswordcode" type="text" size="20" value="12345">
+<input id="resetpasswordpassword" type="password" size="20" value="secret"><br>
+<input id="resetpasswordtarget" type="text" size="40" value="http://localhost:8111/resetpassword"></p>
 <hr>
 <p><button onclick="exportkey();">export key:</button><br>
 <input id="exportkeytarget" type="text" size="40" value="http://localhost:8111/exportkey"></p>
