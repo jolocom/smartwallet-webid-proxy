@@ -65,6 +65,16 @@ Logout:
 
 	POST: http://localhost:8111/logout 
 
+Forgot Password:
+
+	POST: http://localhost:8111/forgotpassword
+	Parameters: username
+
+Reset Password:
+
+	POST: http://localhost:8111/resetpassword
+	Parameters: username, code, password
+
 Export Private Key:
 
 	REDIRECT: http://localhost:8111/exportkey
