@@ -29,14 +29,17 @@ public class ForgotPasswordServlet extends BaseServlet {
 
 		User user = WebIDProxyServlet.users.get(username);
 
+		if (user == null) {
+
+			this.error(request, response, HttpServletResponse.SC_BAD_REQUEST, "User " + username + " not found.");
+			return;
+		}
+
 		// create recovery code
 
-		if (user != null) {
-
-			String recoverycode = generateRecoverycode();
-			user.setRecoverycode(recoverycode);
-			WebIDProxyServlet.users.put(user);
-		}
+		String recoverycode = generateRecoverycode();
+		user.setRecoverycode(recoverycode);
+		WebIDProxyServlet.users.put(user);
 
 		log.debug("User " + username + " forgot password, created recovery code.");
 
