@@ -6,19 +6,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.mindrot.jbcrypt.BCrypt;
 
 import com.jolocom.webidproxy.users.User;
 import com.jolocom.webidproxy.util.Util;
 
-import org.mindrot.jbcrypt.BCrypt;
-
-public class RegisterServlet extends NonProxyServlet {
+public class RegisterServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 3793048689633131588L;
-
-	private static final Log log = LogFactory.getLog(RegisterServlet.class);
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -32,14 +27,13 @@ public class RegisterServlet extends NonProxyServlet {
 
 		if (! Util.isAlphaNumeric(username)) {
 
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Username " + username + " is not alphanumeric.");
-			log.debug("Username " + username + " is not alphanumeric.");
+			this.error(request, response, HttpServletResponse.SC_BAD_REQUEST, "Username " + username + " is not alphanumeric.");
+			return;
 		}
 
 		if (WebIDProxyServlet.users.exists(username)) {
 
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "User " + username + " exists already.");
-			log.debug("User " + username + " exists already.");
+			this.error(request, response, HttpServletResponse.SC_BAD_REQUEST, "User " + username + " exists already.");
 			return;
 		}
 
@@ -55,7 +49,6 @@ public class RegisterServlet extends NonProxyServlet {
 		User user = WebIDProxyServlet.users.register(username, BCrypt.hashpw(password,BCrypt.gensalt()), name, email);
 		request.getSession().setAttribute("username", username);
 		request.getSession().setAttribute("HTTPCLIENT", null);
-		log.debug("User " + username + " successfully registered and logged in.");
 
 		String content = "{\"webid\":\"" + user.getWebid() + "\"}";
 

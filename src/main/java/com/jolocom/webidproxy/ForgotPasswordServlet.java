@@ -14,7 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import com.jolocom.webidproxy.email.ForgotPasswordEmail;
 import com.jolocom.webidproxy.users.User;
 
-public class ForgotPasswordServlet extends NonProxyServlet {
+public class ForgotPasswordServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 3793048689633131588L;
 

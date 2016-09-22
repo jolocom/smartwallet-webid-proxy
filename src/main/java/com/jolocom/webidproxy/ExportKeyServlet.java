@@ -15,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.jolocom.webidproxy.users.User;
 
-public class ExportKeyServlet extends NonProxyServlet {
+public class ExportKeyServlet extends BaseServlet {
 
 	private static final long serialVersionUID = 1540763620371741373L;
 
@@ -25,13 +25,15 @@ public class ExportKeyServlet extends NonProxyServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		User user = loadUser(request);
-		if (user == null) { response.sendError(HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
+		if (user == null) { this.error(request, response, HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
 		File keyfile = user == null ? null : new File("./users/" + user.getUsername() + ".p12");
 
+		response.setStatus(HttpServletResponse.SC_OK);
 		response.setHeader("Content-Type", "application/x-pkcs12");
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + user.getUsername() + ".p12\"");
 		IOUtils.copy(new FileInputStream(keyfile), response.getOutputStream());
+
 		log.debug("Private key of user " + user.getUsername() + " successfully exported.");
 	}
 
