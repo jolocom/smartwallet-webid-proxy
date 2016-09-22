@@ -15,8 +15,10 @@ function register() {
 
 	var username = $("#regusername").val();
 	var password = $("#regpassword").val();
+	var name = $("#regname").val();
+	var email = $("#regemail").val();
 
-	$.post(regtarget, {"username":username,"password":password})
+	$.post(regtarget, {"username":username,"password":password,"name":name,"email":email})
 	.done(function() {
 		alert("success!");
 	})

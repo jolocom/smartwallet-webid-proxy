@@ -2,6 +2,7 @@ package com.jolocom.webidproxy;
 
 import java.io.IOException;
 
+import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,6 +11,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.jolocom.webidproxy.email.ForgotPasswordEmail;
 import com.jolocom.webidproxy.users.User;
 
 public class ForgotPasswordServlet extends NonProxyServlet {
@@ -27,6 +29,8 @@ public class ForgotPasswordServlet extends NonProxyServlet {
 
 		User user = WebIDProxyServlet.users.get(username);
 
+		// create recovery code
+
 		if (user != null) {
 
 			String recoverycode = generateRecoverycode();
@@ -35,6 +39,20 @@ public class ForgotPasswordServlet extends NonProxyServlet {
 		}
 
 		log.debug("User " + username + " forgot password, created recovery code.");
+
+		// send e-mail
+
+		ForgotPasswordEmail email = new ForgotPasswordEmail(user);
+
+		try {
+
+			email.send();
+		} catch (MessagingException ex) {
+
+			throw new ServletException("Cannot send e-mail: " + ex.getMessage(), ex);
+		}
+
+		// done
 
 		String content = "{}";
 

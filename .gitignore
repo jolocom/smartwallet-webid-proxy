@@ -1,5 +1,6 @@
 .project
 log4j.log
+velocity.log
 .classpath
 /.settings/
 /bin/
