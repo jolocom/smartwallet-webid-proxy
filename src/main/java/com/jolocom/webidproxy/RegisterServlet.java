@@ -28,6 +28,8 @@ public class RegisterServlet extends NonProxyServlet {
 		String name = request.getParameter("name");
 		String email = request.getParameter("email");
 
+		username = username.toLowerCase();
+
 		if (! Util.isAlphaNumeric(username)) {
 
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Username " + username + " is not alphanumeric.");
