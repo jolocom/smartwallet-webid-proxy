@@ -69,6 +69,12 @@ public abstract class Email {
 		Properties properties = System.getProperties();
 		properties.setProperty("mail.smtp.host", this.getHost());
 
+		// check if we have everything
+
+		if (this.getFrom() == null) throw new MessagingException("No e-mail sender address available.");
+		if (this.getTo() == null) throw new MessagingException("No e-mail recipient address available.");
+		if (this.getSubject() == null) throw new MessagingException("No e-mail subject available.");
+
 		// start a session
 
 		Session session = Session.getDefaultInstance(properties);
