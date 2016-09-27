@@ -1,7 +1,0 @@
-webid@jolocom.com
-WebID Registration
-
-Thank you for registering your WebID $user.webid ${newline}
-Your recovery code is $user.recoverycode. ${newline}
-${newline}
-Please follow the instructions at ??? to set a new password for your WebID! ${newline}
