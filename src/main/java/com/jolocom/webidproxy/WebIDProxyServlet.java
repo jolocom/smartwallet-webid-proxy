@@ -85,7 +85,7 @@ public class WebIDProxyServlet extends BaseServlet {
 
 		String target = request.getParameter("url");
 		User user = loadUser(request);
-		if (user == null) { this.error(request, response, HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
+		if (user == null || user.getVerificationcode() != null) { this.error(request, response, HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
 		HttpGet httpGet = new HttpGet(target);
@@ -107,7 +107,7 @@ public class WebIDProxyServlet extends BaseServlet {
 
 		String target = request.getParameter("url");
 		User user = loadUser(request);
-		if (user == null) { this.error(request, response, HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
+		if (user == null || user.getVerificationcode() != null) { this.error(request, response, HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
 		HttpPut httpPut = new HttpPut(target);
@@ -130,7 +130,7 @@ public class WebIDProxyServlet extends BaseServlet {
 
 		String target = request.getParameter("url");
 		User user = loadUser(request);
-		if (user == null) { this.error(request, response, HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
+		if (user == null || user.getVerificationcode() != null) { this.error(request, response, HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
 		HttpPost httpPost = new HttpPost(target);
@@ -152,7 +152,7 @@ public class WebIDProxyServlet extends BaseServlet {
 
 		String target = request.getParameter("url");
 		User user = loadUser(request);
-		if (user == null) { this.error(request, response, HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
+		if (user == null || user.getVerificationcode() != null) { this.error(request, response, HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
 		HttpPatch httpPatch = new HttpPatch(target);
@@ -175,7 +175,7 @@ public class WebIDProxyServlet extends BaseServlet {
 
 		String target = request.getParameter("url");
 		User user = loadUser(request);
-		if (user == null) { this.error(request, response, HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
+		if (user == null || user.getVerificationcode() != null) { this.error(request, response, HttpServletResponse.SC_FORBIDDEN, "User not found."); return; }
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
 		HttpDelete httpDelete = new HttpDelete(target);

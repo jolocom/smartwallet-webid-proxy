@@ -17,6 +17,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Properties;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,6 +26,8 @@ public class UsersFileImpl implements Users {
 	private static final Log log = LogFactory.getLog(UsersFileImpl.class);
 
 	public static File DIR = new File("./users/");
+
+	private static final int VERIFYCODE_LENGTH = 8;
 
 	private static final String CLIENT_KEYSTORE_TYPE = "PKCS12";
 	private static final String CLIENT_KEYSTORE_PASS = "changeit";
@@ -45,6 +48,11 @@ public class UsersFileImpl implements Users {
 		if (this.get(username) != null) throw new RuntimeException("User '" + username + "' exists already.");
 
 		User user = new User(username, password, name, email);
+
+		// create verification code
+
+		String verificationcode = generateVerificationcode();
+		user.setVerificationcode(verificationcode);
 
 		// save user locally
 
@@ -172,5 +180,10 @@ public class UsersFileImpl implements Users {
 		// done
 
 		log.debug("Deleted user " + user);
+	}
+
+	private static String generateVerificationcode() {
+
+		return RandomStringUtils.randomAlphanumeric(VERIFYCODE_LENGTH);
 	}
 }
