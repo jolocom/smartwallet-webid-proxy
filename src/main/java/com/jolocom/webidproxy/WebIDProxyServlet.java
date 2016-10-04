@@ -212,7 +212,7 @@ public class WebIDProxyServlet extends BaseServlet {
 		for (Entry<String, String> header : OPTIONS_HEADERS.entrySet()) response.addHeader(header.getKey(), header.getValue());
 	}
 
-	private static User loadUser(HttpServletRequest request) {
+	public static User loadUser(HttpServletRequest request) {
 
 		HttpSession session = request.getSession(false);
 		String username = session == null ? null : (String) session.getAttribute("username");
