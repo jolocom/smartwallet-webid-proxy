@@ -56,6 +56,11 @@ Register:
 	POST: http://localhost:8111/register
 	Parameters: username, password, name (optional), email (optional)
 
+Verify E-Mail:
+
+	POST: http://localhost:8111/verifyemail
+	Parameters: username, code
+
 Login:
 
 	POST: http://localhost:8111/login
