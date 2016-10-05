@@ -1,6 +1,9 @@
 package com.jolocom.webidproxy;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
@@ -20,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.jolocom.webidproxy.users.User;
+import com.jolocom.webidproxy.users.UsersFileImpl;
 
 public class ImportKeyServlet extends BaseServlet {
 
@@ -71,6 +75,9 @@ public class ImportKeyServlet extends BaseServlet {
 		user.setCertificate(certificate);
 		user.setSpkac(null);
 		WebIDProxyServlet.users.put(user);
+
+		Files.copy(fileItems.get(0).getInputStream(), new File(UsersFileImpl.DIR, user.getUsername() + ".p12").toPath(), StandardCopyOption.REPLACE_EXISTING);
+		fileItems.get(0).delete();
 
 		String content = "{}";
 
