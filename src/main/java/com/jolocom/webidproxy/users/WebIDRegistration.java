@@ -20,7 +20,7 @@ public class WebIDRegistration {
 
 	private static final Log log = LogFactory.getLog(WebIDRegistration.class);
 
-	static void registerWebIDAccount(User user) throws IOException {
+	public static void registerWebIDAccount(User user) throws IOException {
 
 		String webid = webid(user);
 		String host = host(user);
@@ -36,11 +36,12 @@ public class WebIDRegistration {
 		submit(accountEndpoint(user), accountParameterMap);
 	}
 
-	static void registerWebIDCert(User user) throws IOException {
+	public static void registerWebIDCert(User user) throws IOException {
 
 		List<NameValuePair> certParameterMap = new ArrayList<NameValuePair> ();
 		certParameterMap.add(new BasicNameValuePair("username", user.getUsername()));
 		certParameterMap.add(new BasicNameValuePair("spkac", user.getSpkac()));
+		certParameterMap.add(new BasicNameValuePair("webid", user.getWebid()));
 		submit(certEndpoint(user), certParameterMap);
 	}
 

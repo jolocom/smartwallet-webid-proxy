@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.security.GeneralSecurityException;
+import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.PrivateKeyEntry;
@@ -22,8 +23,10 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.jolocom.webidproxy.ssl.SSLGenerator;
 import com.jolocom.webidproxy.users.User;
 import com.jolocom.webidproxy.users.UsersFileImpl;
+import com.jolocom.webidproxy.users.WebIDRegistration;
 
 public class ImportKeyServlet extends BaseServlet {
 
@@ -57,6 +60,7 @@ public class ImportKeyServlet extends BaseServlet {
 
 		String privateKey;
 		String certificate;
+		String spkac;
 
 		try {
 
@@ -66,6 +70,7 @@ public class ImportKeyServlet extends BaseServlet {
 			if (privateKeyEntry == null) { this.error(request, response, HttpServletResponse.SC_BAD_REQUEST, "Key entry not found in uploaded file"); return; }
 			privateKey = Base64.encodeBase64String(privateKeyEntry.getPrivateKey().getEncoded());
 			certificate = Base64.encodeBase64String(privateKeyEntry.getCertificate().getEncoded());
+			spkac = Base64.encodeBase64String(SSLGenerator.generateSignedPublicKeyAndChallenge(new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey())).getEncoded());
 		} catch (GeneralSecurityException ex) {
 
 			throw new IOException(ex.getMessage(), ex);
@@ -73,8 +78,10 @@ public class ImportKeyServlet extends BaseServlet {
 
 		user.setPrivatekey(privateKey);
 		user.setCertificate(certificate);
-		user.setSpkac(null);
+		user.setSpkac(spkac);
 		WebIDProxyServlet.users.put(user);
+
+		WebIDRegistration.registerWebIDCert(user);
 
 		Files.copy(fileItems.get(0).getInputStream(), new File(UsersFileImpl.DIR, user.getUsername() + ".p12").toPath(), StandardCopyOption.REPLACE_EXISTING);
 		fileItems.get(0).delete();
