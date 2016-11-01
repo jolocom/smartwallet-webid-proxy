@@ -36,7 +36,7 @@ public class WebIDRegistration {
 		if (user.getName() != null) accountParameterMap.add(new BasicNameValuePair("name", user.getName()));
 		if (user.getEmail() != null) accountParameterMap.add(new BasicNameValuePair("email", user.getEmail()));
 
-		submit(null, null, accountEndpoint(user), accountParameterMap);
+		post(null, null, accountEndpoint(user), accountParameterMap);
 	}
 
 	public static void newWebIDCert(HttpServletRequest request, User user) throws IOException {
@@ -46,7 +46,7 @@ public class WebIDRegistration {
 		certParameterMap.add(new BasicNameValuePair("spkac", user.getSpkac()));
 		certParameterMap.add(new BasicNameValuePair("webid", user.getWebid()));
 
-		submit(request, user, certEndpoint(user), certParameterMap);
+		post(request, user, certEndpoint(user), certParameterMap);
 	}
 
 	private static String webid(User user) {
@@ -93,7 +93,7 @@ public class WebIDRegistration {
 		}
 	}
 
-	private static void submit(HttpServletRequest request, User user, String target, List<? extends NameValuePair> nameValuePairs) throws IOException {
+	private static void post(HttpServletRequest request, User user, String target, List<? extends NameValuePair> nameValuePairs) throws IOException {
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
 		HttpPost httpPost = new HttpPost(target);
