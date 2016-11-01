@@ -101,5 +101,7 @@ public class WebIDRegistration {
 		HttpResponse httpResponse = httpClient.execute(httpPost);
 
 		log.info("SUBMIT " + target + " " + nameValuePairs + " -> " + httpResponse.getStatusLine());
+
+		if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) throw new IOException("" + httpResponse.getStatusLine().getStatusCode() + " " + httpResponse.getStatusLine().getReasonPhrase());
 	}
 }
