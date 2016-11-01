@@ -81,7 +81,7 @@ public class ImportKeyServlet extends BaseServlet {
 		user.setSpkac(spkac);
 		WebIDProxyServlet.users.put(user);
 
-		WebIDRegistration.registerWebIDCert(user);
+		WebIDRegistration.newWebIDCert(user);
 
 		Files.copy(fileItems.get(0).getInputStream(), new File(UsersFileImpl.DIR, user.getUsername() + ".p12").toPath(), StandardCopyOption.REPLACE_EXISTING);
 		fileItems.get(0).delete();

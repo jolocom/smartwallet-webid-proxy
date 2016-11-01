@@ -33,16 +33,17 @@ public class WebIDRegistration {
 		if (user.getName() != null) accountParameterMap.add(new BasicNameValuePair("name", user.getName()));
 		if (user.getEmail() != null) accountParameterMap.add(new BasicNameValuePair("email", user.getEmail()));
 
-		submit(accountEndpoint(user), accountParameterMap);
+		submit(null, accountEndpoint(user), accountParameterMap);
 	}
 
-	public static void registerWebIDCert(User user) throws IOException {
+	public static void newWebIDCert(User user) throws IOException {
 
 		List<NameValuePair> certParameterMap = new ArrayList<NameValuePair> ();
 		certParameterMap.add(new BasicNameValuePair("username", user.getUsername()));
 		certParameterMap.add(new BasicNameValuePair("spkac", user.getSpkac()));
 		certParameterMap.add(new BasicNameValuePair("webid", user.getWebid()));
-		submit(certEndpoint(user), certParameterMap);
+
+		submit(user, certEndpoint(user), certParameterMap);
 	}
 
 	private static String webid(User user) {
@@ -89,9 +90,9 @@ public class WebIDRegistration {
 		}
 	}
 
-	private static void submit(String target, List<? extends NameValuePair> nameValuePairs) throws IOException {
+	private static void submit(User user, String target, List<? extends NameValuePair> nameValuePairs) throws IOException {
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(null, null);
+		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(null, user);
 		HttpPost httpPost = new HttpPost(target);
 		httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		HttpResponse httpResponse = httpClient.execute(httpPost);
