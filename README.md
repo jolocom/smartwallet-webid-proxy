@@ -82,7 +82,7 @@ Export Private Key:
 Import Private Key:
 
 	POST: http://localhost:8111/importkey
-	Parameters: file (multipart/form-data)
+	Parameters: .p12 file (multipart/form-data)
 
 Users are stored in **./users/** and also created on the SoLiD server.
 
