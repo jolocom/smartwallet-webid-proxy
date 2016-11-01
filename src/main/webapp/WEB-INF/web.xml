@@ -81,6 +81,16 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>ImportKeyServlet</servlet-name>
+		<servlet-class>com.jolocom.webidproxy.ImportKeyServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ImportKeyServlet</servlet-name>
+		<url-pattern>/importkey</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>WebIDProxyServlet</servlet-name>
 		<servlet-class>com.jolocom.webidproxy.WebIDProxyServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>

@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -20,7 +23,7 @@ public class WebIDRegistration {
 
 	private static final Log log = LogFactory.getLog(WebIDRegistration.class);
 
-	static void registerWebIDAccount(User user) throws IOException {
+	public static void registerWebIDAccount(User user) throws IOException {
 
 		String webid = webid(user);
 		String host = host(user);
@@ -33,16 +36,17 @@ public class WebIDRegistration {
 		if (user.getName() != null) accountParameterMap.add(new BasicNameValuePair("name", user.getName()));
 		if (user.getEmail() != null) accountParameterMap.add(new BasicNameValuePair("email", user.getEmail()));
 
-		post(accountEndpoint(user), accountParameterMap);
+		post(null, null, accountEndpoint(user), accountParameterMap);
 	}
 
-	static void registerWebIDCert(User user) throws IOException {
+	public static void newWebIDCert(HttpServletRequest request, User user) throws IOException {
 
 		List<NameValuePair> certParameterMap = new ArrayList<NameValuePair> ();
 		certParameterMap.add(new BasicNameValuePair("username", user.getUsername()));
 		certParameterMap.add(new BasicNameValuePair("spkac", user.getSpkac()));
+		certParameterMap.add(new BasicNameValuePair("webid", user.getWebid()));
 
-		post(certEndpoint(user), certParameterMap);
+		post(request, user, certEndpoint(user), certParameterMap);
 	}
 
 	private static String webid(User user) {
@@ -89,13 +93,15 @@ public class WebIDRegistration {
 		}
 	}
 
-	private static void post(String target, List<? extends NameValuePair> nameValuePairs) throws IOException {
+	private static void post(HttpServletRequest request, User user, String target, List<? extends NameValuePair> nameValuePairs) throws IOException {
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(null, null);
+		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
 		HttpPost httpPost = new HttpPost(target);
 		httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		HttpResponse httpResponse = httpClient.execute(httpPost);
 
 		log.info("SUBMIT " + target + " " + nameValuePairs + " -> " + httpResponse.getStatusLine());
+
+		if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) throw new IOException("" + httpResponse.getStatusLine().getStatusCode() + " " + httpResponse.getStatusLine().getReasonPhrase());
 	}
 }

@@ -111,15 +111,38 @@ function exportkey() {
 	window.location.href = target;
 }
 
+function importkey() {
+
+	var importkeytarget = $("#importkeytarget").val();
+
+	var file = $("#importkeyfile")[0].files[0];
+
+	var formdata = new FormData();
+	formdata.append("file", file);
+	$.ajax({
+		url: importkeytarget,
+		type: "POST",
+		data: formdata,
+		processData: false,
+		contentType: false
+	})
+	.done(function(data) {
+		alert("success: " + data);
+	})
+	.fail(function(err) {
+		alert("error: " + JSON.stringify(err));
+	});
+}
+
 function post() {
 
 	var target = $("#target").val();
 	var content = $("#content").val();
 
 	$.ajax({
-      url:target,
-      type:"POST",
-      data:content,
+      url: target,
+      type: "POST",
+      data: content,
       headers: { 
         "Accept" : "text/turtle; charset=utf-8",
         "Content-Type": "text/turtle; charset=utf-8"
@@ -127,7 +150,7 @@ function post() {
       xhrFields: {
         withCredentials: true
       }
-    })  
+    })
 	.done(function(data) {
 		alert("success: " + data);
 	})
@@ -142,9 +165,9 @@ function put() {
 	var content = $("#content").val();
 
 	$.ajax({
-      url:target,
-      type:"PUT",
-      data:content,
+      url: target,
+      type: "PUT",
+      data: content,
       headers: { 
         "Accept" : "text/turtle; charset=utf-8",
         "Content-Type": "text/turtle; charset=utf-8"
@@ -166,8 +189,8 @@ function delet() {
 	var target = $("#target").val();
 
 	$.ajax({
-      url:target,
-      type:"DELETE",
+      url: target,
+      type: "DELETE",
       xhrFields: {
         withCredentials: true
       }
@@ -230,6 +253,10 @@ function get() {
 <hr>
 <p><button onclick="exportkey();">export key:</button><br>
 <input id="exportkeytarget" type="text" size="40" value="http://localhost:8111/exportkey"></p>
+<hr>
+<p><button onclick="importkey();">import key:</button><br>
+<form id="importkeyfileform" name="importkeyfileform" enctype="multipart/form-data"><input id="importkeyfile" type="file"></form>
+<input id="importkeytarget" type="text" size="40" value="http://localhost:8111/importkey"></p>
 <hr>
 <p><button onclick="post();">http post:</button> <button onclick="put();">http put:</button>
 <button onclick="get();">http get:</button> <button onclick="delet();">http delete:</button>

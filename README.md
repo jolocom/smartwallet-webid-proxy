@@ -84,6 +84,11 @@ Export Private Key:
 
 	REDIRECT: http://localhost:8111/exportkey
 
+Import Private Key:
+
+	POST: http://localhost:8111/importkey
+	Parameters: .p12 file (multipart/form-data)
+
 Users are stored in **./users/** and also created on the SoLiD server.
 
 For each user, there is a key/value text file and a PKCS#12 key store.
