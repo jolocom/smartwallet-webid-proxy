@@ -33,7 +33,7 @@ public class WebIDRegistration {
 		if (user.getName() != null) accountParameterMap.add(new BasicNameValuePair("name", user.getName()));
 		if (user.getEmail() != null) accountParameterMap.add(new BasicNameValuePair("email", user.getEmail()));
 
-		submit(accountEndpoint(user), accountParameterMap);
+		post(accountEndpoint(user), accountParameterMap);
 	}
 
 	static void registerWebIDCert(User user) throws IOException {
@@ -41,7 +41,8 @@ public class WebIDRegistration {
 		List<NameValuePair> certParameterMap = new ArrayList<NameValuePair> ();
 		certParameterMap.add(new BasicNameValuePair("username", user.getUsername()));
 		certParameterMap.add(new BasicNameValuePair("spkac", user.getSpkac()));
-		submit(certEndpoint(user), certParameterMap);
+
+		post(certEndpoint(user), certParameterMap);
 	}
 
 	private static String webid(User user) {
@@ -88,7 +89,7 @@ public class WebIDRegistration {
 		}
 	}
 
-	private static void submit(String target, List<? extends NameValuePair> nameValuePairs) throws IOException {
+	private static void post(String target, List<? extends NameValuePair> nameValuePairs) throws IOException {
 
 		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(null, null);
 		HttpPost httpPost = new HttpPost(target);
