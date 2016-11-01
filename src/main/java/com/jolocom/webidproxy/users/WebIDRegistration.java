@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -33,17 +36,17 @@ public class WebIDRegistration {
 		if (user.getName() != null) accountParameterMap.add(new BasicNameValuePair("name", user.getName()));
 		if (user.getEmail() != null) accountParameterMap.add(new BasicNameValuePair("email", user.getEmail()));
 
-		submit(null, accountEndpoint(user), accountParameterMap);
+		submit(null, null, accountEndpoint(user), accountParameterMap);
 	}
 
-	public static void newWebIDCert(User user) throws IOException {
+	public static void newWebIDCert(HttpServletRequest request, User user) throws IOException {
 
 		List<NameValuePair> certParameterMap = new ArrayList<NameValuePair> ();
 		certParameterMap.add(new BasicNameValuePair("username", user.getUsername()));
 		certParameterMap.add(new BasicNameValuePair("spkac", user.getSpkac()));
 		certParameterMap.add(new BasicNameValuePair("webid", user.getWebid()));
 
-		submit(user, certEndpoint(user), certParameterMap);
+		submit(request, user, certEndpoint(user), certParameterMap);
 	}
 
 	private static String webid(User user) {
@@ -90,9 +93,9 @@ public class WebIDRegistration {
 		}
 	}
 
-	private static void submit(User user, String target, List<? extends NameValuePair> nameValuePairs) throws IOException {
+	private static void submit(HttpServletRequest request, User user, String target, List<? extends NameValuePair> nameValuePairs) throws IOException {
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(null, user);
+		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
 		HttpPost httpPost = new HttpPost(target);
 		httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		HttpResponse httpResponse = httpClient.execute(httpPost);
