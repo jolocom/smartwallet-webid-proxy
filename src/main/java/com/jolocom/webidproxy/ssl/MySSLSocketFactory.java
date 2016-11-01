@@ -103,8 +103,12 @@ public class MySSLSocketFactory {
 		httpClientBuilder.addInterceptorFirst(MYHTTPRESPONSEINTERCEPTOR);
 
 		httpClient = httpClientBuilder.build();
-		if (request != null) request.getSession().setAttribute("HTTPCLIENT", httpClient);
-		log.info("Storing HTTPCLIENT in session.");
+
+		if (request != null) {
+
+			log.info("Storing HTTPCLIENT in session.");
+			request.getSession().setAttribute("HTTPCLIENT", httpClient);
+		}
 
 		return httpClient;
 	}
