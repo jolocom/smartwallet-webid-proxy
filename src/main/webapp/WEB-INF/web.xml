@@ -21,6 +21,16 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>VerifyEmailServlet</servlet-name>
+		<servlet-class>com.jolocom.webidproxy.VerifyEmailServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>VerifyEmailServlet</servlet-name>
+		<url-pattern>/verifyemail</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
 		<servlet-class>com.jolocom.webidproxy.LoginServlet</servlet-class>
 	</servlet>

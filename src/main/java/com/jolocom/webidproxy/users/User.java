@@ -24,8 +24,9 @@ public class User {
 	public String privatekey;
 	public String certificate;
 	public String recoverycode;
+	public String verificationcode;
 
-	User(String username, String password, String name, String email, String webid, String spkac, String privatekey, String certificate, String recoverycode) {
+	User(String username, String password, String name, String email, String webid, String spkac, String privatekey, String certificate, String recoverycode, String verificationcode) {
 
 		this.username = username;
 		this.password = password;
@@ -36,6 +37,7 @@ public class User {
 		this.privatekey = privatekey;
 		this.certificate = certificate;
 		this.recoverycode = recoverycode;
+		this.verificationcode = verificationcode;
 	}
 
 	User(String username, String password, String name, String email) {
@@ -81,7 +83,8 @@ public class User {
 				properties.getProperty("spkac"),
 				properties.getProperty("privatekey"),
 				properties.getProperty("certificate"),
-				properties.getProperty("recoverycode"));
+				properties.getProperty("recoverycode"),
+				properties.getProperty("verificationcode"));
 	}
 
 	static Properties toProperties(User user) {
@@ -96,6 +99,7 @@ public class User {
 		if (user.getPrivatekey() != null) properties.setProperty("privatekey", user.getPrivatekey());
 		if (user.getCertificate() != null) properties.setProperty("certificate", user.getCertificate());
 		if (user.getRecoverycode() != null) properties.setProperty("recoverycode", user.getRecoverycode());
+		if (user.getVerificationcode() != null) properties.setProperty("verificationcode", user.getVerificationcode());
 
 		return properties;
 	}
@@ -170,6 +174,14 @@ public class User {
 
 	public void setRecoverycode(String recoverycode) {
 		this.recoverycode = recoverycode;
+	}
+
+	public String getVerificationcode() {
+		return verificationcode;
+	}
+
+	public void setVerificationcode(String verificationcode) {
+		this.verificationcode = verificationcode;
 	}
 
 	@Override

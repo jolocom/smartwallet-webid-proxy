@@ -88,6 +88,22 @@ function resetpassword() {
 	});
 }
 
+function verifyemail() {
+
+	var verifyemailtarget = $("#verifyemailtarget").val();
+
+	var username = $("#verifyemailusername").val();
+	var code = $("#verifyemailcode").val();
+
+	$.post(verifyemailtarget, {"username":username,"code":code})
+	.done(function() {
+		alert("success!");
+	})
+	.fail(function(err) {
+		alert("error: " + JSON.stringify(err));
+	});
+}
+
 function exportkey() {
 
 	var target = $("#exportkeytarget").val();
@@ -188,6 +204,11 @@ function get() {
 <input id="regname" type="text" size="20" value="My Name">
 <input id="regemail" type="text" size="20" value="my@email.com"><br>
 <input id="regtarget" type="text" size="40" value="http://localhost:8111/register"></p>
+<hr>
+<p><button onclick="verifyemail();">verify email:</button>
+<input id="verifyemailusername" type="text" size="20" value="testuser1">
+<input id="verifyemailcode" type="text" size="20" value="12345">
+<input id="verifyemailtarget" type="text" size="40" value="http://localhost:8111/verifyemail"></p>
 <hr>
 <p><button onclick="login();">login:</button>
 <input id="logusername" type="text" size="20" value="testuser1">

@@ -98,6 +98,13 @@ public abstract class Email {
 		message.setSubject(this.getSubject());
 		message.setText(writer.toString());
 
+		try {
+			message.writeTo(System.out);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		// send message
 
 		Transport.send(message);
