@@ -63,7 +63,11 @@ public abstract class BaseServlet extends HttpServlet {
 		response.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		response.setHeader("Access-Control-Allow-Headers", "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Link");
 
-		response.getWriter().print(msg);
+		response.setContentType("application/json");
+
+		String content = "{\"error\":\"" + msg + "\"}";
+
+		response.getWriter().print(content);
 		response.getWriter().flush();
 	}
 }
