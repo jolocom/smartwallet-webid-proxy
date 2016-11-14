@@ -4,8 +4,8 @@ import com.jolocom.webidproxy.users.User;
 
 public class RegisterEmail extends Email {
 
-	public RegisterEmail(User user) {
+	public RegisterEmail(User user, String to) {
 
-		super(user, "/email-register.vm");
+		super(user, to, "/email-register.vm");
 	}
 }

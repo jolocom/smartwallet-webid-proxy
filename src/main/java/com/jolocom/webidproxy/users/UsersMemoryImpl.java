@@ -23,7 +23,7 @@ public class UsersMemoryImpl implements Users {
 
 		try {
 
-			WebIDRegistration.registerWebIDAccount(user);
+			WebIDRegistration.registerWebIDAccount(user, email);
 		} catch (IOException ex) {
 
 			throw new RuntimeException(ex.getMessage(), ex);

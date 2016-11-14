@@ -49,7 +49,7 @@ public class RegisterServlet extends BaseServlet {
 
 		// send e-mail
 
-		RegisterEmail registerEmail = new RegisterEmail(user);
+		RegisterEmail registerEmail = new RegisterEmail(user, email);
 
 		try {
 

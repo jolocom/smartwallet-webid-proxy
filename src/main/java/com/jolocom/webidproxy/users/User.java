@@ -18,7 +18,6 @@ public class User {
 	public String username;
 	public String password;
 	public String name;
-	public String email;
 	public String webid;
 	public String spkac;
 	public String privatekey;
@@ -26,12 +25,11 @@ public class User {
 	public String recoverycode;
 	public String verificationcode;
 
-	User(String username, String password, String name, String email, String webid, String spkac, String privatekey, String certificate, String recoverycode, String verificationcode) {
+	User(String username, String password, String name, String webid, String spkac, String privatekey, String certificate, String recoverycode, String verificationcode) {
 
 		this.username = username;
 		this.password = password;
 		this.name = name;
-		this.email = email;
 		this.webid = webid;
 		this.spkac = spkac;
 		this.privatekey = privatekey;
@@ -45,7 +43,6 @@ public class User {
 		this.username = username;
 		this.password = password;
 		this.name = name;
-		this.email = email;
 
 		if (Config.vhosts()) {
 
@@ -78,7 +75,6 @@ public class User {
 				properties.getProperty("username"),
 				properties.getProperty("password"),
 				properties.getProperty("name"),
-				properties.getProperty("email"),
 				properties.getProperty("webid"),
 				properties.getProperty("spkac"),
 				properties.getProperty("privatekey"),
@@ -93,7 +89,6 @@ public class User {
 		if (user.getUsername() != null) properties.setProperty("username", user.getUsername());
 		if (user.getPassword() != null) properties.setProperty("password", user.getPassword());
 		if (user.getName() != null) properties.setProperty("name", user.getName());
-		if (user.getEmail() != null) properties.setProperty("email", user.getEmail());
 		if (user.getWebid() != null) properties.setProperty("webid", user.getWebid());
 		if (user.getSpkac() != null) properties.setProperty("spkac", user.getSpkac());
 		if (user.getPrivatekey() != null) properties.setProperty("privatekey", user.getPrivatekey());
@@ -126,14 +121,6 @@ public class User {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public String getWebid() {
@@ -186,6 +173,6 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [username=" + username + ", name=" + name + ", email=" + email + ", webid=" + webid + "]";
+		return "User [username=" + username + ", name=" + name + ", webid=" + webid + "]";
 	}
 }

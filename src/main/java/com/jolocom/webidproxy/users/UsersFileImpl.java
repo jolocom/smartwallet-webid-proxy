@@ -70,7 +70,7 @@ public class UsersFileImpl implements Users {
 
 		try {
 
-			WebIDRegistration.registerWebIDAccount(user);
+			WebIDRegistration.registerWebIDAccount(user, email);
 		} catch (Exception ex) {
 
 			deleteUserAndKey(user);
