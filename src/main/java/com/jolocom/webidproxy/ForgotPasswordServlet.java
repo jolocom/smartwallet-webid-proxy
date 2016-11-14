@@ -10,9 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.marmotta.ldclient.exception.DataRetrievalException;
 
 import com.jolocom.webidproxy.email.ForgotPasswordEmail;
 import com.jolocom.webidproxy.users.User;
+import com.jolocom.webidproxy.users.WebIDRegistration;
 
 public class ForgotPasswordServlet extends BaseServlet {
 
@@ -43,9 +45,25 @@ public class ForgotPasswordServlet extends BaseServlet {
 
 		log.debug("User " + username + " forgot password, created recovery code.");
 
+		// find out user's email from LDP
+
+		String to;
+
+		try {
+
+			to = WebIDRegistration.retrieveUserEmail(request, user);
+		} catch (DataRetrievalException ex) {
+
+			throw new ServletException("Cannot retrieve e-mail of user " + username + ": " + ex.getMessage(), ex);
+		}
+
+		if (to == null) throw new ServletException("No e-mail registered for user " + username);
+
+		log.debug("Found " + username + " email: " + to);
+
 		// send e-mail
 
-		ForgotPasswordEmail email = new ForgotPasswordEmail(user);
+		ForgotPasswordEmail email = new ForgotPasswordEmail(user, to);
 
 		try {
 

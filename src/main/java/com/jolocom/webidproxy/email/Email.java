@@ -33,11 +33,11 @@ public abstract class Email {
 	private String subject;
 	private String template;
 
-	public Email(User user, String resource) {
+	public Email(User user, String to, String resource) {
 
 		this.user = user;
 		this.host = "localhost";
-		this.to = user.getEmail();
+		this.to = to;
 
 		this.readResource(resource);
 	}
@@ -62,7 +62,7 @@ public abstract class Email {
 		}
 	}
 
-	public void send() throws MessagingException {
+	public void send() throws MessagingException, IOException {
 
 		// set host
 
@@ -98,12 +98,7 @@ public abstract class Email {
 		message.setSubject(this.getSubject());
 		message.setText(writer.toString());
 
-		try {
-			message.writeTo(System.out);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		message.writeTo(System.out);
 
 		// send message
 
