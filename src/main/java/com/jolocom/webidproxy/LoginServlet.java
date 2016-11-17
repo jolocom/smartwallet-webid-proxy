@@ -30,6 +30,7 @@ public class LoginServlet extends BaseServlet {
 		}
 
 		HttpSession session = request.getSession(true);
+		session.setMaxInactiveInterval(2592000);
 		session.setAttribute("username", username);
 		session.setAttribute("HTTPCLIENT", null);
 
