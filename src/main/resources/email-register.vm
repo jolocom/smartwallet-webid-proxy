@@ -4,4 +4,4 @@ WebID Registration
 Thank you for registering your WebID! ${newline}
 Please verify your e-mail address by clicking on this link:${newline}
 ${newline}
-https://littlesister.jolocom.com/#/verify-email/${user.username}/${user.verificationcode} ${newline}
+https://testing.littlesister.jolocom.com/#/verify-email/${user.username}/${user.verificationcode} ${newline}
