@@ -29,7 +29,7 @@ public class VerifyEmailServlet extends BaseServlet {
 		user.setVerificationcode(null);
 		WebIDProxyServlet.users.put(user);
 
-		String content = "{\"email\":\"" + user.getEmail() + "\", \"webId\":\"" + user.getWebid() + "\"}";
+		String content = "{\"email\":\"" + user.getEmail() + "\"}";
 		this.success(request, response, content, "application/json");
 	}
 }
