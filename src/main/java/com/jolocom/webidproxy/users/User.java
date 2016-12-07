@@ -24,8 +24,9 @@ public class User {
 	public String certificate;
 	public String recoverycode;
 	public String verificationcode;
+	public String email;
 
-	User(String username, String password, String name, String webid, String spkac, String privatekey, String certificate, String recoverycode, String verificationcode) {
+	User(String username, String password, String name, String webid, String spkac, String privatekey, String certificate, String recoverycode, String verificationcode, String email) {
 
 		this.username = username;
 		this.password = password;
@@ -36,6 +37,7 @@ public class User {
 		this.certificate = certificate;
 		this.recoverycode = recoverycode;
 		this.verificationcode = verificationcode;
+		this.email = email;
 	}
 
 	User(String username, String password, String name, String email) {
@@ -43,6 +45,7 @@ public class User {
 		this.username = username;
 		this.password = password;
 		this.name = name;
+		this.email = email;
 
 		if (Config.vhosts()) {
 
@@ -70,7 +73,6 @@ public class User {
 	}
 
 	static User fromProperties(Properties properties) {
-
 		return new User(
 				properties.getProperty("username"),
 				properties.getProperty("password"),
@@ -80,7 +82,8 @@ public class User {
 				properties.getProperty("privatekey"),
 				properties.getProperty("certificate"),
 				properties.getProperty("recoverycode"),
-				properties.getProperty("verificationcode"));
+				properties.getProperty("verificationcode"),
+				properties.getProperty("email"));
 	}
 
 	static Properties toProperties(User user) {
@@ -95,6 +98,7 @@ public class User {
 		if (user.getCertificate() != null) properties.setProperty("certificate", user.getCertificate());
 		if (user.getRecoverycode() != null) properties.setProperty("recoverycode", user.getRecoverycode());
 		if (user.getVerificationcode() != null) properties.setProperty("verificationcode", user.getVerificationcode());
+		if (user.getEmail() != null) properties.setProperty("email", user.getEmail());
 
 		return properties;
 	}
@@ -171,6 +175,13 @@ public class User {
 		this.verificationcode = verificationcode;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	@Override
 	public String toString() {
 		return "User [username=" + username + ", name=" + name + ", webid=" + webid + "]";

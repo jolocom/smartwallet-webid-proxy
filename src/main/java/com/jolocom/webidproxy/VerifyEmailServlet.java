@@ -25,12 +25,11 @@ public class VerifyEmailServlet extends BaseServlet {
 			this.error(request, response, HttpServletResponse.SC_BAD_REQUEST, "User " + username + " cannot verify e-mail.");
 			return;
 		}
-
+		
 		user.setVerificationcode(null);
 		WebIDProxyServlet.users.put(user);
 
-		String content = "{}";
-
+		String content = "{\"email\":\"" + user.getEmail() + "\"}";
 		this.success(request, response, content, "application/json");
 	}
 }
