@@ -119,6 +119,7 @@ public class UsersFileImpl implements Users {
 		reader.close();
 
 		// done
+
 		User user = User.fromProperties(properties);
 		log.debug("Loaded user " + user);
 		return user;

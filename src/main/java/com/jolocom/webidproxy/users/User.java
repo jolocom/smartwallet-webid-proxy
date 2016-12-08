@@ -73,6 +73,7 @@ public class User {
 	}
 
 	static User fromProperties(Properties properties) {
+
 		return new User(
 				properties.getProperty("username"),
 				properties.getProperty("password"),
@@ -182,6 +183,7 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
 	@Override
 	public String toString() {
 		return "User [username=" + username + ", name=" + name + ", webid=" + webid + "]";
