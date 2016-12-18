@@ -176,6 +176,12 @@
 			<artifactId>ldclient-core</artifactId>
 			<version>3.3.0</version>
 			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>log4j-over-slf4j</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.marmotta</groupId>
