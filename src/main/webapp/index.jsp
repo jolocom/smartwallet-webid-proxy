@@ -16,9 +16,10 @@ function register() {
 	var username = $("#regusername").val();
 	var password = $("#regpassword").val();
 	var name = $("#regname").val();
+	var privatekey = $("#regprivatekey").val();
 	var email = $("#regemail").val();
 
-	$.post(regtarget, {"username":username,"password":password,"name":name,"email":email})
+	$.post(regtarget, {"username":username,"password":password,"name":name,"privatekey":privatekey,"email":email})
 	.done(function() {
 		alert("success!");
 	})
@@ -33,8 +34,9 @@ function login() {
 
 	var username = $("#logusername").val();
 	var password = $("#logpassword").val();
+	var privatekey = $("#logprivatekey").val();
 
-	$.post(logintarget, {"username":username,"password":password})
+	$.post(logintarget, {"username":username,"password":password,"privatekey":privatekey})
 	.done(function() {
 		alert("success!");
 	})
@@ -226,6 +228,31 @@ function get() {
 <input id="regpassword" type="password" size="20" value="secret">
 <input id="regname" type="text" size="20" value="My Name">
 <input id="regemail" type="text" size="20" value="my@email.com"><br>
+<textarea id="regprivatekey" cols="80" rows="10">
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCZ0tvE/yYqSKZN6ayWjAJ
+wqMLZFs4k0fhgy2iJSYTEe0oU2KeG/Zv2Dgkv05xkiRI7L1wkYZZoOFgNy3nMdzLIVf6HsB
+LFzD9W8+vY05WrP9XM65eMWXVuG+MVl4KGsMq2DU3KdvK9EmpHqKzLSHw4jMA4+FfaZ6tn8
+gXZHMziVgJ/JdYv1eV+KVERaBHzUo+/tx6QAtM2z2l+ioCxVNUWJTyUQQOQffMjQbqBeFt6
+Kkm6+KqC4qOI4UOtXiXZ2vVu57WDf1CojzJxDVykpJBb6/RdBYgn3fcY76nup+YSLIjwGCM
+rypWJTILaht5TKXfKk0zIHI3CHlGyFoPbpuyXAgMBAAECggEAZQBm/XrrfGgnipEcmd1k3M
+Ry7EhlIxgblrL4+OwlGT467mUz2xc7CN0+ewDfd8PpDKOURO8u60/TwXsRhofd+F0+u6mJK
+gdqr5WKDt0fMUrA/8TRxX4X9Syqdsr9EaOT9uXVZlOkHzGwR00h6Hi32AnTTZUDWo0npyDr
+ZhvbC+GR3YF0D5W1rbUMnoc86kjm0UABL1o5K8mY/bzmZXS16/GLrOjkLV6HqP9524mH/A3
+DHMl4pTUxkdxQoahh8EZXB8jFPm9FEwaorVPqM1wIT/GaAPZJS8dbjv0JwAhgEm52liYUxY
+iaAFJCPrvLB07PTiJKaUV88FkqNdkj+7gQAQKBgQD7hl2tpKmaQs3Wc5h0f59gAMKbImbVW
+y/RxMVvz5DPkQahfdUJcBEFiNRcvNV4EdZ8SJSGnPq1I77GNJ6KL1aREvT9OFPA3Fr4XpMe
+5sT5QqywvxIcKw1vz69CX5Xxc/RfuhY2az8RXx4Y+scwZmFkF7MskSXoqgNDR/KVKOoxAQK
+BgQCcj3zPZZB+ClIjEpR8FJ+GNWt66bXUzCOuVgdKQ7FMMOJO8uP/tJCXs5vY3zhnKGyOOp
+XjwFIeCm+fasw/DBSBl5UrtcxO6lr+ISgBEMo/OB+OUmt792KYAD28Jez5vcgrd8zXgR6sz
+aLbbH3NCC8TSeCA2pZH35O8UszTx48FlwKBgEQpRXmpBc0oDV/wM4BelXIOwq4HxJZM/8h4
+6ohCV5voUUOyNek41WQKkIIRKkg/jUBg6t8P62DrLufHmq8X5P2rhXiZqxi4nm5wMq5NG1P
+xHZtILEA16o5CWdxCyv+DzNWkOCDHL3AltqJOU2xqUjotsgCB1SQX7optFPAXBmABAoGAFw
+4eUCBhxd3ZOKb8zMTwtP/a4w/Vog+p1Xt/uVT8n/625O9p2fcKL/zYH3jHwpE2Yz+HYTGqJ
+hhdVbmReFtcDbV31yb/fkOOwMu7K2UAk4y9QOUsROYqU739WV6wZhqnhpcuyDGQhdwGdo+k
+evQQkqOXdwI5jT4EcIA0/57sleMCgYEAvQPfUT7wAfZIZygdB8PrgjvwWKJk/FIMhLDm2yw
+VCF8fBiAIGQQEigxQ+CmhLnqx8M82WPuHGJE1eS2YMMd3u8JfQAP9CkTmJ4Qj8U6/1n/dvn
+RzIQKdLaQqAlLKS3UhJ0rJs8+Jnj/+6ZkxnmzY2uLMMTtGVTmA92vVtySVtgc\=
+</textarea><br>
 <input id="regtarget" type="text" size="40" value="http://localhost:8111/register"></p>
 <hr>
 <p><button onclick="verifyemail();">verify email:</button>
@@ -236,6 +263,31 @@ function get() {
 <p><button onclick="login();">login:</button>
 <input id="logusername" type="text" size="20" value="testuser1">
 <input id="logpassword" type="password" size="20" value="secret"><br>
+<textarea id="logprivatekey" cols="80" rows="10">
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCZ0tvE/yYqSKZN6ayWjAJ
+wqMLZFs4k0fhgy2iJSYTEe0oU2KeG/Zv2Dgkv05xkiRI7L1wkYZZoOFgNy3nMdzLIVf6HsB
+LFzD9W8+vY05WrP9XM65eMWXVuG+MVl4KGsMq2DU3KdvK9EmpHqKzLSHw4jMA4+FfaZ6tn8
+gXZHMziVgJ/JdYv1eV+KVERaBHzUo+/tx6QAtM2z2l+ioCxVNUWJTyUQQOQffMjQbqBeFt6
+Kkm6+KqC4qOI4UOtXiXZ2vVu57WDf1CojzJxDVykpJBb6/RdBYgn3fcY76nup+YSLIjwGCM
+rypWJTILaht5TKXfKk0zIHI3CHlGyFoPbpuyXAgMBAAECggEAZQBm/XrrfGgnipEcmd1k3M
+Ry7EhlIxgblrL4+OwlGT467mUz2xc7CN0+ewDfd8PpDKOURO8u60/TwXsRhofd+F0+u6mJK
+gdqr5WKDt0fMUrA/8TRxX4X9Syqdsr9EaOT9uXVZlOkHzGwR00h6Hi32AnTTZUDWo0npyDr
+ZhvbC+GR3YF0D5W1rbUMnoc86kjm0UABL1o5K8mY/bzmZXS16/GLrOjkLV6HqP9524mH/A3
+DHMl4pTUxkdxQoahh8EZXB8jFPm9FEwaorVPqM1wIT/GaAPZJS8dbjv0JwAhgEm52liYUxY
+iaAFJCPrvLB07PTiJKaUV88FkqNdkj+7gQAQKBgQD7hl2tpKmaQs3Wc5h0f59gAMKbImbVW
+y/RxMVvz5DPkQahfdUJcBEFiNRcvNV4EdZ8SJSGnPq1I77GNJ6KL1aREvT9OFPA3Fr4XpMe
+5sT5QqywvxIcKw1vz69CX5Xxc/RfuhY2az8RXx4Y+scwZmFkF7MskSXoqgNDR/KVKOoxAQK
+BgQCcj3zPZZB+ClIjEpR8FJ+GNWt66bXUzCOuVgdKQ7FMMOJO8uP/tJCXs5vY3zhnKGyOOp
+XjwFIeCm+fasw/DBSBl5UrtcxO6lr+ISgBEMo/OB+OUmt792KYAD28Jez5vcgrd8zXgR6sz
+aLbbH3NCC8TSeCA2pZH35O8UszTx48FlwKBgEQpRXmpBc0oDV/wM4BelXIOwq4HxJZM/8h4
+6ohCV5voUUOyNek41WQKkIIRKkg/jUBg6t8P62DrLufHmq8X5P2rhXiZqxi4nm5wMq5NG1P
+xHZtILEA16o5CWdxCyv+DzNWkOCDHL3AltqJOU2xqUjotsgCB1SQX7optFPAXBmABAoGAFw
+4eUCBhxd3ZOKb8zMTwtP/a4w/Vog+p1Xt/uVT8n/625O9p2fcKL/zYH3jHwpE2Yz+HYTGqJ
+hhdVbmReFtcDbV31yb/fkOOwMu7K2UAk4y9QOUsROYqU739WV6wZhqnhpcuyDGQhdwGdo+k
+evQQkqOXdwI5jT4EcIA0/57sleMCgYEAvQPfUT7wAfZIZygdB8PrgjvwWKJk/FIMhLDm2yw
+VCF8fBiAIGQQEigxQ+CmhLnqx8M82WPuHGJE1eS2YMMd3u8JfQAP9CkTmJ4Qj8U6/1n/dvn
+RzIQKdLaQqAlLKS3UhJ0rJs8+Jnj/+6ZkxnmzY2uLMMTtGVTmA92vVtySVtgc\=
+</textarea><br>
 <input id="logintarget" type="text" size="40" value="http://localhost:8111/login"></p>
 <hr>
 <p><button onclick="logout();">logout:</button><br>

@@ -26,7 +26,6 @@ import org.apache.commons.logging.LogFactory;
 import com.jolocom.webidproxy.ssl.SSLGenerator;
 import com.jolocom.webidproxy.users.User;
 import com.jolocom.webidproxy.users.UsersFileImpl;
-import com.jolocom.webidproxy.users.WebIDRegistration;
 
 public class ImportKeyServlet extends BaseServlet {
 
@@ -76,12 +75,12 @@ public class ImportKeyServlet extends BaseServlet {
 			throw new IOException(ex.getMessage(), ex);
 		}
 
-		user.setPrivatekey(privateKey);
+/*		user.setPrivatekey(privateKey);
 		user.setCertificate(certificate);
-		user.setSpkac(spkac);
+		user.setSpkac(spkac);*/
 		WebIDProxyServlet.users.put(user);
 
-		WebIDRegistration.newWebIDCert(request, user);
+/*		WebIDRegistration.newWebIDCert(request, user);*/
 
 		Files.copy(fileItems.get(0).getInputStream(), new File(UsersFileImpl.DIR, user.getUsername() + ".p12").toPath(), StandardCopyOption.REPLACE_EXISTING);
 		fileItems.get(0).delete();
