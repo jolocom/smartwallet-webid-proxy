@@ -114,4 +114,10 @@
 		<url-pattern>/*</url-pattern>
 	 </filter-mapping>
 
+	<filter>
+		<filter-name>init</filter-name>
+		<filter-class>com.jolocom.webidproxy.websocket.WebSocketInitFilter</filter-class>
+		<load-on-startup>1</load-on-startup>
+	</filter>
+
 </web-app>

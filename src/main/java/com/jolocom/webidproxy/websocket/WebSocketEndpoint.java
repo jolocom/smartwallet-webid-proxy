@@ -25,7 +25,7 @@ public class WebSocketEndpoint extends javax.websocket.Endpoint {
 
 	private static final Logger log = LoggerFactory.getLogger(WebSocketEndpoint.class);
 
-	private static final String PATH = "/websocket?url={target}";
+	private static final String PATH = "/websocket/{target}";
 
 	public static final List<WebSocketMessageHandler> WEBSOCKETMESSAGEHANDLERS = new ArrayList<WebSocketMessageHandler> ();
 

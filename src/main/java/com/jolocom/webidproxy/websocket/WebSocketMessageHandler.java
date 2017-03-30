@@ -3,6 +3,7 @@ package com.jolocom.webidproxy.websocket;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URI;
 import java.security.GeneralSecurityException;
 
 import javax.websocket.Session;
@@ -10,17 +11,19 @@ import javax.websocket.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WebSocketMessageHandler implements javax.websocket.MessageHandler.Whole<String> {
+public class WebSocketMessageHandler implements javax.websocket.MessageHandler.Whole<String>, WebSocketClient.ClientCallback {
 
 	private static final Logger log = LoggerFactory.getLogger(WebSocketMessageHandler.class);
 
 	private Session session;
 	private String target;
+	private WebSocketClient client;
 
 	public WebSocketMessageHandler(Session session, String target) {
 
 		this.session = session;
 		this.target = target;
+		this.client = null;
 	}
 
 	@Override
@@ -29,64 +32,63 @@ public class WebSocketMessageHandler implements javax.websocket.MessageHandler.W
 		// read line
 
 		BufferedReader bufferedReader = new BufferedReader(new StringReader(string));
-		String line;
+		String message;
 
 		try {
 
-			line = bufferedReader.readLine();
+			message = bufferedReader.readLine();
 		} catch (IOException ex) {
 
 			throw new RuntimeException(ex.getMessage(), ex);
 		}
 
-		log.info("Received line " + line + " from session " + this.session.getId());
+		log.info("Received message " + message + " from session " + this.session.getId());
 
 		// first message? connect to Solid.
 
-		if (line.startsWith("{")) {
+		try {
 
-			try {
+			if (this.client == null) this.connectToSolid();
+		} catch (Exception ex) {
 
-				this.connectToSolid(line);
-			} catch (Exception ex) {
-
-				throw new RuntimeException("Cannot connect: " + ex.getMessage(), ex);
-			}
-			return;
-		} 
+			throw new RuntimeException("Cannot connect: " + ex.getMessage(), ex);
+		}
 
 		// send message
 
 		try {
 
-			this.sendToSolid(line);
+			this.sendToSolid(message);
 		} catch (Exception ex) {
 
-			throw new RuntimeException("Cannot send to XDI: " + ex.getMessage(), ex);
+			throw new RuntimeException("Cannot send to Solid: " + ex.getMessage(), ex);
 		}
 	}
 
-	private void connectToSolid(String line) throws GeneralSecurityException {
+	private void connectToSolid() throws GeneralSecurityException {
 
 		// open connection to Solid
 
-		// TODO
+		this.client = new WebSocketClient();
+		this.client.setWebSocketEndpointUri(URI.create("wss://markus.webid.jolocom.com/"));
+
+		this.client.setClientCallback(this);
 	}
 
-	private void sendToSolid(String line) throws GeneralSecurityException {
+	private void sendToSolid(String message) throws GeneralSecurityException {
 
 		// send to solid
 
-		// TODO
+		this.client.send(message);
 	}
 
-	private void sendToClient(WebSocketMessageHandler fromWebSocketMessageHandler, String string) {
+	private void sendToClient(String message) {
 
 		// send to client
 
-		this.session.getAsyncRemote().sendText(string);
+		this.session.getAsyncRemote().sendText(message);
 
-		log.info("Sent string " + string + " to session " + this.session.getId());
+		log.info("Sent message " + message + " to session " + this.session.getId());
 	}
 
 	/*
@@ -101,5 +103,13 @@ public class WebSocketMessageHandler implements javax.websocket.MessageHandler.W
 	public String getTarget() {
 
 		return this.target;
+	}
+
+	@Override
+	public void onClientMessage(String message) {
+
+		log.debug("Received client message: " + message);
+
+		this.sendToClient(message);
 	}
 }

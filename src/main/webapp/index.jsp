@@ -217,6 +217,56 @@ function get() {
 	});
 }
 
+var ws = null;
+
+function wsStart() {
+
+	if (ws) wsStop();
+
+	var wsurl = $("#wsurl").val();
+
+	ws = new WebSocket(wsurl, null);
+
+	ws.onmessage = function(event) {
+
+		$('#wsmessages').val($('#wsmessages').val() + event.data + "\n");
+	};
+
+	ws.onerror = function(event) {
+
+		alert('WebSocket error: ' + event.data);
+	};
+
+	ws.onopen = function(event) {
+
+		alert('WebSocket opened.');
+		$('#wsmessages').val('');
+	};
+
+	ws.onclose = function(event) {
+
+		alert('WebSocket closed: ' + event.code + ' ' + event.reason);
+		$('#wsmessages').val('');
+	};
+}
+
+function wsStop() {
+
+	if (! ws) { alert('No open WebSocket.'); return; }
+
+	ws.close();
+	ws = null;
+}
+
+function wsMessage() {
+
+	if (! ws) { alert('No open WebSocket.'); return; }
+
+	var wsMessage = $("#wsmessage").val().trim();
+
+	ws.send(wsMessage);
+}
+
 </script>
 
 </head>
@@ -282,5 +332,21 @@ function get() {
     &lt;http://xmlns.com/foaf/0.1/name&gt; &quot;Lal Laaa 233&quot; .
 
 </textarea>
+
+<hr noshade>
+
+<table>
+<tr><td>WebSocket URL:</td><td><input type="text" id="wsurl" value="ws://localhost:8111/websocket/testuser1.<%= Config.webidHost() %>"></td></tr>
+<tr><td><button onclick="wsStart();">Start WebSocket</button></td><td><button onclick="wsStop();">Stop WebSocket</button></td></tr>
+</table>
+<textarea id="wsmessages" cols="140" rows="30"></textarea>
+<table>
+<tr>
+<td>WebSocket Message:</td>
+<td><input type="text" id="wsmessage" size="40" value="sub https://markus.webid.jolocom.com/profile/card"></td>
+<td><button onclick="wsMessage();">Send Message</button></td>
+</tr>
+</table>
+
 </body>
 </html>
