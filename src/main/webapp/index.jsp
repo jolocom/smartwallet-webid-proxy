@@ -5,6 +5,10 @@
 <html>
 <head>
 
+<style>
+* { font-family: sans-serif; }
+</style>
+
 <script type="text/javascript" src="jquery-2.0.3.min.js"></script>
 
 <script type="text/javascript">
@@ -336,14 +340,14 @@ function wsMessage() {
 <hr noshade>
 
 <table>
-<tr><td>WebSocket URL:</td><td><input type="text" id="wsurl" value="ws://localhost:8111/websocket/testuser1.<%= Config.webidHost() %>"></td></tr>
+<tr><td>WebSocket URL:</td><td><input type="text" id="wsurl" size="80" value="ws://localhost:8111/websocket/https://<%= Config.webidHost() %>/profile/card"></td></tr>
 <tr><td><button onclick="wsStart();">Start WebSocket</button></td><td><button onclick="wsStop();">Stop WebSocket</button></td></tr>
 </table>
 <textarea id="wsmessages" cols="140" rows="30"></textarea>
 <table>
 <tr>
 <td>WebSocket Message:</td>
-<td><input type="text" id="wsmessage" size="40" value="sub https://markus.webid.jolocom.com/profile/card"></td>
+<td><input type="text" id="wsmessage" size="40" value="sub https://testuser1.mywebid.com:8443/profile/card2"></td>
 <td><button onclick="wsMessage();">Send Message</button></td>
 </tr>
 </table>
