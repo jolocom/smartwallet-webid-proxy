@@ -47,7 +47,7 @@ E.g. if you want to access the resource
 
 Then via the proxy you would instead access
 
-	http://localhost:8111/proxy/https://testuser1.localhost:8443/profile/card
+	http://localhost:8111/proxy?url=https://testuser1.localhost:8443/profile/card
 
 ### User management
 
