@@ -70,7 +70,7 @@ public class WebSocketMessageHandler implements javax.websocket.MessageHandler.W
 		// open connection to Solid
 
 		this.client = new WebSocketClient();
-		this.client.setWebSocketEndpointUri(URI.create("wss://markus.webid.jolocom.com/"));
+		this.client.setWebSocketEndpointUri(URI.create(this.target));
 
 		this.client.setClientCallback(this);
 	}

@@ -269,6 +269,7 @@ function wsMessage() {
 	var wsMessage = $("#wsmessage").val().trim();
 
 	ws.send(wsMessage);
+	alert('success!');
 }
 
 </script>
@@ -315,7 +316,7 @@ function wsMessage() {
 <p><button onclick="post();">http post:</button> <button onclick="put();">http put:</button>
 <button onclick="get();">http get:</button> <button onclick="delet();">http delete:</button>
 <input id="target" type="text" size="80" value="http://localhost:8111/proxy?url=https://testuser1.<%= Config.webidHost() %>/profile/card"></p>
-<textarea id="content" cols="140" rows="30">
+<textarea id="content" cols="140" rows="15">
 @prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
 
 &lt;&gt;
@@ -340,10 +341,10 @@ function wsMessage() {
 <hr noshade>
 
 <table>
-<tr><td>WebSocket URL:</td><td><input type="text" id="wsurl" size="80" value="ws://localhost:8111/websocket/https://<%= Config.webidHost() %>/profile/card"></td></tr>
+<tr><td>WebSocket URL:</td><td><input type="text" id="wsurl" size="80" value="ws://localhost:8111/websocket/wss%3A%2F%2Fmywebid.com%3A8443%2Fprofile%2Fcard"></td></tr>
 <tr><td><button onclick="wsStart();">Start WebSocket</button></td><td><button onclick="wsStop();">Stop WebSocket</button></td></tr>
 </table>
-<textarea id="wsmessages" cols="140" rows="30"></textarea>
+<textarea id="wsmessages" cols="140" rows="15"></textarea>
 <table>
 <tr>
 <td>WebSocket Message:</td>
