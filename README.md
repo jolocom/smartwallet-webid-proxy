@@ -49,6 +49,18 @@ Then via the proxy you would instead access
 
 	http://localhost:8111/proxy?url=https://testuser1.localhost:8443/profile/card
 
+### Websocket support
+
+Solid websocket connections can also be proxied, using the same architecture and a similar URL pattern as above.
+
+E.g. if you want to access the resource
+
+	wss://testuser1.mywebid.com:8443/profile/card
+
+Then via the proxy you would instead access
+
+	ws://localhost:8111/websocket/wss%3A%2F%2Fmywebid.com%3A8443%2Fprofile%2Fcard
+
 ### User management
 
 Register:
