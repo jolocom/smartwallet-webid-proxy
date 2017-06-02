@@ -1,22 +1,12 @@
 package com.jolocom.webidproxy.users;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.security.KeyFactory;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.KeyPair;
 import java.util.Properties;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,9 +19,6 @@ public class UsersFileImpl implements Users {
 
 	private static final int VERIFYCODE_LENGTH = 8;
 
-	private static final String CLIENT_KEYSTORE_TYPE = "PKCS12";
-	private static final String CLIENT_KEYSTORE_PASS = "changeit";
-
 	@Override
 	public boolean exists(String username) {
 
@@ -43,11 +30,11 @@ public class UsersFileImpl implements Users {
 	}
 
 	@Override
-	public User register(String username, String password, String name, String email) {
+	public User register(String username, String password, String name, String webid, String email, String spkac, KeyPair keyPair) {
 
 		if (this.get(username) != null) throw new RuntimeException("User '" + username + "' exists already.");
 
-		User user = new User(username, password, name, email);
+		User user = new User(username, password, name, webid, email);
 
 		// create verification code
 
@@ -59,7 +46,6 @@ public class UsersFileImpl implements Users {
 		try {
 
 			saveUser(user);
-			saveKey(user);
 		} catch (Exception ex) {
 
 			deleteUserAndKey(user);
@@ -70,7 +56,7 @@ public class UsersFileImpl implements Users {
 
 		try {
 
-			WebIDRegistration.registerWebIDAccount(user, email);
+			WebIDRegistration.registerWebIDAccount(user, email, spkac, keyPair);
 		} catch (Exception ex) {
 
 			deleteUserAndKey(user);
@@ -139,34 +125,6 @@ public class UsersFileImpl implements Users {
 		// done
 
 		log.debug("Saved user " + user);
-	}
-
-	public static void saveKey(User user) throws Exception {
-
-		if (! DIR.exists()) DIR.mkdir();
-
-		// key store
-
-		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.decodeBase64(user.getPrivatekey().getBytes(Charset.forName("UTF-8"))));
-		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-
-		CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-		X509Certificate certificate = (X509Certificate)certFactory.generateCertificate(new ByteArrayInputStream(Base64.decodeBase64(user.getCertificate())));
-
-		final PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
-
-		// key manager
-
-		File ksfile = new File(DIR, user.getUsername() + ".p12");
-
-		KeyStore ks = KeyStore.getInstance(CLIENT_KEYSTORE_TYPE);
-		ks.load(null, CLIENT_KEYSTORE_PASS.toCharArray());
-		ks.setKeyEntry(user.getUsername(), privateKey, CLIENT_KEYSTORE_PASS.toCharArray(), new Certificate[] { certificate });
-		ks.store(new FileOutputStream(ksfile), CLIENT_KEYSTORE_PASS.toCharArray());
-
-		// done
-
-		log.debug("Saved key " + user);
 	}
 
 	private static void deleteUserAndKey(User user) {

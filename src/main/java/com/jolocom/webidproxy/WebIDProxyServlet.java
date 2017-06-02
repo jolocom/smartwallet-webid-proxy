@@ -87,7 +87,7 @@ public class WebIDProxyServlet extends BaseServlet {
 		User user = loadUser(request);
 		if (user == null || user.getVerificationcode() != null) { this.error(request, response, HttpServletResponse.SC_UNAUTHORIZED, "User not found."); return; }
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
+		HttpClient httpClient = MySSLSocketFactory.getHttpClient(request);
 		HttpGet httpGet = new HttpGet(target);
 		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpGet.setHeader(copyHeader, request.getHeader(copyHeader));
 		HttpResponse httpResponse = httpClient.execute(httpGet);
@@ -109,7 +109,7 @@ public class WebIDProxyServlet extends BaseServlet {
 		User user = loadUser(request);
 		if (user == null || user.getVerificationcode() != null) { this.error(request, response, HttpServletResponse.SC_UNAUTHORIZED, "User not found."); return; }
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
+		HttpClient httpClient = MySSLSocketFactory.getHttpClient(request);
 		HttpPut httpPut = new HttpPut(target);
 		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpPut.setHeader(copyHeader, request.getHeader(copyHeader));
 		httpPut.setEntity(new InputStreamEntity(request.getInputStream()));
@@ -132,7 +132,7 @@ public class WebIDProxyServlet extends BaseServlet {
 		User user = loadUser(request);
 		if (user == null || user.getVerificationcode() != null) { this.error(request, response, HttpServletResponse.SC_UNAUTHORIZED, "User not found."); return; }
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
+		HttpClient httpClient = MySSLSocketFactory.getHttpClient(request);
 		HttpPost httpPost = new HttpPost(target);
 		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpPost.setHeader(copyHeader, request.getHeader(copyHeader));
 		httpPost.setEntity(new InputStreamEntity(request.getInputStream()));
@@ -154,7 +154,7 @@ public class WebIDProxyServlet extends BaseServlet {
 		User user = loadUser(request);
 		if (user == null || user.getVerificationcode() != null) { this.error(request, response, HttpServletResponse.SC_UNAUTHORIZED, "User not found."); return; }
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
+		HttpClient httpClient = MySSLSocketFactory.getHttpClient(request);
 		HttpPatch httpPatch = new HttpPatch(target);
 		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpPatch.setHeader(copyHeader, request.getHeader(copyHeader));
 		httpPatch.setEntity(new InputStreamEntity(request.getInputStream()));
@@ -177,7 +177,7 @@ public class WebIDProxyServlet extends BaseServlet {
 		User user = loadUser(request);
 		if (user == null || user.getVerificationcode() != null) { this.error(request, response, HttpServletResponse.SC_UNAUTHORIZED, "User not found."); return; }
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
+		HttpClient httpClient = MySSLSocketFactory.getHttpClient(request);
 		HttpDelete httpDelete = new HttpDelete(target);
 		for (String copyHeader : COPY_HEADERS) if (request.getHeader(copyHeader) != null) httpDelete.setHeader(copyHeader, request.getHeader(copyHeader));
 		HttpResponse httpResponse = httpClient.execute(httpDelete);

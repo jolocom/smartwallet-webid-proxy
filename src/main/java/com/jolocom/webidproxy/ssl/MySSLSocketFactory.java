@@ -1,6 +1,8 @@
 package com.jolocom.webidproxy.ssl;
-import java.io.File;
 import java.io.IOException;
+import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
 
 import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpServletRequest;
@@ -42,23 +44,34 @@ public class MySSLSocketFactory {
 
 	private static final String CLIENT_KEYSTORE_PASS = "changeit";
 
-	public static CloseableHttpClient getNewHttpClient(HttpServletRequest request, User user) {
+	public static CloseableHttpClient getHttpClient(HttpServletRequest request) {
 
 		CloseableHttpClient httpClient = request == null ? null : (CloseableHttpClient) request.getSession().getAttribute("HTTPCLIENT");
-		if (httpClient != null) {
 
-			log.info("Retrieved HTTPCLIENT from session.");
-			return httpClient;
-		}
+		log.info("Retrieved HTTPCLIENT from session: " + httpClient);
+		return httpClient;
+	}
 
-		File keyfile = user == null ? null : new File("./users/" + user.getUsername() + ".p12");
+	public static CloseableHttpClient createHttpClient(HttpServletRequest request, User user, KeyPair keyPair) {
 
 		SSLContext sslContext;
 
 		try {
 
+			String dn = "CN=" + "WebID" + ", O=WebID, ST=Some-State, C=US";
+			String altname = user.getWebid();
+			int days = 5000;
+			String algorithm = "X509";
+
+			Certificate certificate = SSLGenerator.generateCertificate(dn, altname, keyPair, days, algorithm);
+
+			KeyStore keyStore = KeyStore.getInstance("JKS");
+			keyStore.load(null);
+			keyStore.setCertificateEntry("cert-alias", certificate);
+			keyStore.setKeyEntry("key-alias", keyPair.getPrivate(), CLIENT_KEYSTORE_PASS.toCharArray(), new Certificate[] { certificate });
+
 			SSLContextBuilder sslContextBuilder = SSLContexts.custom();
-			if (keyfile != null) sslContextBuilder.loadKeyMaterial(keyfile, CLIENT_KEYSTORE_PASS.toCharArray(), CLIENT_KEYSTORE_PASS.toCharArray());
+			sslContextBuilder.loadKeyMaterial(keyStore, CLIENT_KEYSTORE_PASS.toCharArray(), null);
 			sslContextBuilder.loadTrustMaterial(TrustSelfSignedStrategy.INSTANCE);
 			sslContextBuilder.useProtocol("TLS");
 			sslContextBuilder.setSecureRandom(null);
@@ -102,11 +115,11 @@ public class MySSLSocketFactory {
 		httpClientBuilder.addInterceptorLast(MYHTTPREQUESTINTERCEPTOR);
 		httpClientBuilder.addInterceptorFirst(MYHTTPRESPONSEINTERCEPTOR);
 
-		httpClient = httpClientBuilder.build();
+		CloseableHttpClient httpClient = httpClientBuilder.build();
 
 		if (request != null) {
 
-			log.info("Storing HTTPCLIENT in session.");
+			log.info("Storing HTTPCLIENT in session: " + httpClient);
 			request.getSession().setAttribute("HTTPCLIENT", httpClient);
 		}
 

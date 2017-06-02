@@ -1,6 +1,7 @@
 package com.jolocom.webidproxy;
 
 import java.io.IOException;
+import java.security.KeyPair;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -51,7 +52,7 @@ public class ForgotPasswordServlet extends BaseServlet {
 
 		try {
 
-			to = WebIDRegistration.retrieveUserEmail(request, user);
+			to = WebIDRegistration.retrieveUserEmail(request, user, (KeyPair) null);
 		} catch (DataRetrievalException ex) {
 
 			throw new ServletException("Cannot retrieve e-mail of user " + username + ": " + ex.getMessage(), ex);

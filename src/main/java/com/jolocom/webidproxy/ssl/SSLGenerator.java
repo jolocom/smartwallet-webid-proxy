@@ -1,18 +1,23 @@
 package com.jolocom.webidproxy.ssl;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.Signature;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPrivateCrtKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 import java.util.Date;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERBitString;
@@ -32,20 +37,25 @@ import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
 public class SSLGenerator {
 
 	public static final String CHALLENGE_STRING = "";
-	
+
 	static {
 
 		Security.addProvider(new BouncyCastleProvider());
 	}
 
-	public static KeyPair generateKeyPair(int keyLength) {
+	public static KeyPair parseKeyPair(String privateKeyString) {
 
 		try {
 
-			KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", "BC");
-			keyPairGenerator.initialize(keyLength);
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
-			return keyPairGenerator.generateKeyPair();
+			PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(Base64.decodeBase64(privateKeyString));
+			RSAPrivateCrtKey privateKey = (RSAPrivateCrtKey) keyFactory.generatePrivate(privateKeySpec);
+
+			RSAPublicKeySpec publicKeySpec = new java.security.spec.RSAPublicKeySpec(privateKey.getModulus(), privateKey.getPublicExponent());
+			RSAPublicKey publicKey = (RSAPublicKey) keyFactory.generatePublic(publicKeySpec);
+
+			return new KeyPair(publicKey, privateKey);
 		} catch (Exception ex) {
 
 			throw new RuntimeException(ex.getMessage(), ex);

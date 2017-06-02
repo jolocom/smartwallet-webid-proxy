@@ -16,7 +16,7 @@ See https://github.com/solid/solid/issues/22 for a description and discussion of
 	
 	|------------|  WEBID-TLS   |--------------|
 	| USER AGENT | -----------> | RDF RESOURCE |
-	| * tls cert |              | * profile    |
+	| * priv key |              | * profile    |
 	|            | <----------- |              |
 	|            | RDF RESPONSE |              |
 	|------------|              |--------------|
@@ -25,10 +25,10 @@ See https://github.com/solid/solid/issues/22 for a description and discussion of
 
 	Proxy Authentication:
 	
-	|------------|    UN / PW   |---------------|
+	|------------| UN / PW / PK |---------------|
 	| USER AGENT | -----------> | WEBID PROXY   |
-	|            |              | * users       |
-	|            | <----------- | * tls cert(s) |
+	| * priv key |              | * users       |
+	|   (in eth) | <----------- |               |
 	|            |    COOKIE    |               |
 	|------------|              |---------------|
 	
@@ -36,9 +36,9 @@ See https://github.com/solid/solid/issues/22 for a description and discussion of
 	
 	|------------|    COOKIE    |---------------|  WEBID-TLS   |--------------|
 	| USER AGENT | -----------> | WEBID PROXY   | -----------> | RDF RESOURCE |
-	| * cookie   |              | * users       |              | * profile    |
-	|            | <----------- | * tls cert(s) | <----------- |              |
-	|            | RDF RESPONSE |               | RDF RESPONSE |              |
+	| * priv key |              | * users       |              | * profile    |
+	|   (in eth) | <----------- |               | <----------- |              |
+	| * cookie   | RDF RESPONSE |               | RDF RESPONSE |              |
 	|------------|              |---------------|              |--------------|
 
 E.g. if you want to access the resource
@@ -66,7 +66,7 @@ Then via the proxy you would instead access
 Register:
 
 	POST: http://localhost:8111/register
-	Parameters: username, password, name (optional), email (optional)
+	Parameters: username, password, privatekey, name (optional), email (optional)
 
 Verify E-Mail:
 
@@ -76,7 +76,7 @@ Verify E-Mail:
 Login:
 
 	POST: http://localhost:8111/login
-	Parameters: username, password
+	Parameters: username, password, privatekey
 
 Logout:
 

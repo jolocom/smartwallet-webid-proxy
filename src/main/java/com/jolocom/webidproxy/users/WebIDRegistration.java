@@ -1,6 +1,7 @@
 package com.jolocom.webidproxy.users;
 
 import java.io.IOException;
+import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +21,6 @@ import org.apache.marmotta.ldclient.exception.DataRetrievalException;
 import org.apache.marmotta.ldclient.model.ClientConfiguration;
 import org.apache.marmotta.ldclient.model.ClientResponse;
 import org.apache.marmotta.ldclient.services.ldclient.LDClient;
-import org.openrdf.model.Literal;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -36,35 +36,46 @@ public class WebIDRegistration {
 
 	public static final URI URI_FOAF_MBOX = new URIImpl("http://xmlns.com/foaf/0.1/mbox");
 
-	public static void registerWebIDAccount(User user, String email) throws IOException {
+	public static String webidForUsername(String username) {
+
+		if (Config.vhosts()) {
+
+			return "https://" + username + "." + Config.webidHost() + "/profile/card#me";
+		} else {
+
+			return "https://" + Config.webidHost() + "/" + username + "/profile/card#me";
+		}
+	}
+
+	public static void registerWebIDAccount(User user, String email, String spkac, KeyPair keyPair) throws IOException {
 
 		String webid = webid(user);
 		String host = host(user);
 
 		List<NameValuePair> accountParameterMap = new ArrayList<NameValuePair> ();
 		accountParameterMap.add(new BasicNameValuePair("username", user.getUsername()));
-		accountParameterMap.add(new BasicNameValuePair("spkac", user.getSpkac()));
+		accountParameterMap.add(new BasicNameValuePair("spkac", spkac));
 		accountParameterMap.add(new BasicNameValuePair("webid", webid));
 		accountParameterMap.add(new BasicNameValuePair("host", host));
 		if (user.getName() != null) accountParameterMap.add(new BasicNameValuePair("name", user.getName()));
 		if (email != null) accountParameterMap.add(new BasicNameValuePair("email", email));
 
-		post(null, null, accountEndpoint(user), accountParameterMap);
+		post(null, user, accountEndpoint(user), accountParameterMap, keyPair);
 	}
 
-	public static void newWebIDCert(HttpServletRequest request, User user) throws IOException {
+	public static void newWebIDCert(HttpServletRequest request, User user, String spkac, KeyPair keyPair) throws IOException {
 
 		List<NameValuePair> certParameterMap = new ArrayList<NameValuePair> ();
 		certParameterMap.add(new BasicNameValuePair("username", user.getUsername()));
-		certParameterMap.add(new BasicNameValuePair("spkac", user.getSpkac()));
+		certParameterMap.add(new BasicNameValuePair("spkac", spkac));
 		certParameterMap.add(new BasicNameValuePair("webid", user.getWebid()));
 
-		post(request, user, certEndpoint(user), certParameterMap);
+		post(request, user, certEndpoint(user), certParameterMap, keyPair);
 	}
 
-	public static String retrieveUserEmail(HttpServletRequest request, User user) throws DataRetrievalException {
+	public static String retrieveUserEmail(HttpServletRequest request, User user, KeyPair keyPair) throws DataRetrievalException {
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
+		HttpClient httpClient = MySSLSocketFactory.createHttpClient(request, user, keyPair);
 		ClientConfiguration clientConfiguration = new ClientConfiguration();
 		clientConfiguration.setHttpClient(httpClient);
 
@@ -132,9 +143,9 @@ public class WebIDRegistration {
 		}
 	}
 
-	private static void post(HttpServletRequest request, User user, String target, List<? extends NameValuePair> nameValuePairs) throws IOException {
+	private static void post(HttpServletRequest request, User user, String target, List<? extends NameValuePair> nameValuePairs, KeyPair keyPair) throws IOException {
 
-		HttpClient httpClient = MySSLSocketFactory.getNewHttpClient(request, user);
+		HttpClient httpClient = MySSLSocketFactory.createHttpClient(request, user, keyPair);
 		HttpPost httpPost = new HttpPost(target);
 		httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		HttpResponse httpResponse = httpClient.execute(httpPost);
